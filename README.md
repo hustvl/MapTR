@@ -65,7 +65,7 @@ If you find MapTR is useful in your research or applications, please consider gi
 ```bibtex
 @article{MapTR,
   title={MapTR: Structured Modeling and Learning for Online Vectorized HD Map Construction},
-  author={Liao, Bencheng and Chen, shaoyu and Wang, Xinggang and Cheng, Tianheng, and Zhang, Qian and Liu, Wenyu and Huang, Chang},
+  author={Liao, Bencheng and Chen, Shaoyu and Wang, Xinggang and Cheng, Tianheng, and Zhang, Qian and Liu, Wenyu and Huang, Chang},
   journal={arXiv preprint arXiv:XXXX.XXXXX},
   year={2022}
 }
