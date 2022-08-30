@@ -15,7 +15,7 @@ ArXiv Preprint ([arXiv XXXX.XXXX](https://arxiv.org/abs/XXXX.XXXXX))
 #
 ### News
 
-* **`X Aug., 2022`:** We released our paper on Arxiv. Code/Models are coming soon. Please stay tuned! ☕️
+* **`31 Aug, 2022`:** We released our paper on Arxiv. Code/Models are coming soon. Please stay tuned! ☕️
 
 
 ## Introduction
