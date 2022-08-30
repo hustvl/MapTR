@@ -39,7 +39,7 @@ Qualitative results show that MapTR maintains stable and robust map construction
 **Notes**: 
 
 - FPS is measured on NVIDIA GTX3090 GPU
-- All the experiments are performed on 8 NVIDIA GTX3090 GPUs
+- All the experiments are performed on 8 NVIDIA GeForce RTX 3090 GPUs. 
 
 ## Qualitative results on nuScenes val set
 <div align="center"><h4>MapTR maintains stable and robust map construction quality in various driving scenes.</h4></div>
