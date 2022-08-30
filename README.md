@@ -22,9 +22,13 @@ ArXiv Preprint ([arXiv XXXX.XXXX](https://arxiv.org/abs/XXXX.XXXXX))
 <div align="center"><h4>MapTR is a simple, fast and strong online vectorized HD map construction framework.</h4></div>
 
 ![framework](assets/framework.png "framework")
-We present MapTR, a structured end-to-end framework for efficient online vectorized HD map construction. We propose a unified permutation-based modeling approach, *i.e.*, modeling map element as a point set with a group of equivalent permutations, which avoids the definition ambiguity and eases learning. We adopt a
-hierarchical query embedding scheme to flexibly encode structured map information and perform hierarchical bipartite matching for map element learning. MapTR achieves new state-of-the-art vectorized map construction performance and keeps real-time inference speed. 
-Even with only camera input, MapTR-tiny significantly outperforms multi-modality counterparts by $13.5$ AP. MapTR-nano achieves SOTA camera-based performance ( $44.2$ mAP) and runs at  $25.1$ FPS. To our best knowledge, MapTR is the first approach realizing real-time vectorized HD map construction. 
+We present MapTR, a structured  end-to-end framework for efficient online vectorized HD map construction. 
+We propose a unified  permutation-based modeling approach,
+*ie*, modeling map element as a point set with a group of equivalent permutations, which avoids the definition ambiguity of map element and eases learning.
+We adopt a hierarchical query embedding scheme to flexibly encode structured map information and perform hierarchical bipartite matching for map element learning. MapTR achieves the best performance and efficiency among existing vectorized map construction approaches on nuScenes dataset. In particular, MapTR-nano runs at real-time inference speed ( $25.1$ FPS ) on RTX 3090, $8\times$ faster than the existing state-of-the-art camera-based method while achieving $3.3$ higher mAP.
+MapTR-tiny significantly outperforms the existing state-of-the-art multi-modality method by $13.5$ mAP while being faster.
+Qualitative results show that MapTR maintains stable and robust map construction quality in complex and various driving scenes. MapTR is of great application value in autonomous driving. 
+
 ## Models
 | Method | Backbone | Lr Schd | mAP| FPS|memroy | Config | Download |
 | :---: | :---: | :---: | :---: | :---:|:---:| :---: | :---: |
