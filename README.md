@@ -8,7 +8,7 @@
 
 (\*) equal contribution, (<sup>:email:</sup>) corresponding author.
 
-ArXiv Preprint ([arXiv XXXX.XXXX](https://arxiv.org/abs/XXXX.XXXXX))
+ArXiv Preprint ([arXiv 2208.14437](https://arxiv.org/abs/2208.14437))
 
 </div>
 
@@ -38,7 +38,7 @@ Qualitative results show that MapTR maintains stable and robust map construction
 
 **Notes**: 
 
-- FPS is measured on NVIDIA GTX3090 GPU
+- FPS is measured on NVIDIA RTX3090 GPU with batch size of 1 (containing 6 view images).
 - All the experiments are performed on 8 NVIDIA GeForce RTX 3090 GPUs. 
 
 ## Qualitative results on nuScenes val set
@@ -66,7 +66,7 @@ If you find MapTR is useful in your research or applications, please consider gi
 @article{MapTR,
   title={MapTR: Structured Modeling and Learning for Online Vectorized HD Map Construction},
   author={Liao, Bencheng and Chen, Shaoyu and Wang, Xinggang and Cheng, Tianheng, and Zhang, Qian and Liu, Wenyu and Huang, Chang},
-  journal={arXiv preprint arXiv:XXXX.XXXXX},
+  journal={arXiv preprint arXiv:2208.14437},
   year={2022}
 }
 ```
