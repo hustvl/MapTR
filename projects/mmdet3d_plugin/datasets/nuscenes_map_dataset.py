@@ -381,7 +381,6 @@ class LiDARInstanceLines(object):
                     shift_instance = LineString(shift_pts)
                     shift_sampled_points = np.array([list(shift_instance.interpolate(distance).coords) for distance in distances]).reshape(-1, 2)
                     shift_pts_list.append(shift_sampled_points)
-                # import pdb;pdb.set_trace()
             else:
                 sampled_points = np.array([list(instance.interpolate(distance).coords) for distance in distances]).reshape(-1, 2)
                 flip_sampled_points = np.flip(sampled_points, axis=0)
@@ -390,7 +389,6 @@ class LiDARInstanceLines(object):
             
             multi_shifts_pts = np.stack(shift_pts_list,axis=0)
             shifts_num,_,_ = multi_shifts_pts.shape
-            # import pdb;pdb.set_trace()
             if shifts_num > 2*final_shift_num:
                 index = np.random.choice(shift_num, final_shift_num, replace=False)
                 flip0_shifts_pts = multi_shifts_pts[index]
@@ -403,7 +401,6 @@ class LiDARInstanceLines(object):
             
             multi_shifts_pts_tensor[:,:,0] = torch.clamp(multi_shifts_pts_tensor[:,:,0], min=-self.max_x,max=self.max_x)
             multi_shifts_pts_tensor[:,:,1] = torch.clamp(multi_shifts_pts_tensor[:,:,1], min=-self.max_y,max=self.max_y)
-            # if not is_poly:
             if multi_shifts_pts_tensor.shape[0] < 2*final_shift_num:
                 padding = torch.full([final_shift_num*2-multi_shifts_pts_tensor.shape[0],self.fixed_num,2], self.padding_value)
                 multi_shifts_pts_tensor = torch.cat([multi_shifts_pts_tensor,padding],dim=0)
@@ -421,10 +418,7 @@ class LiDARInstanceLines(object):
         fixed_num_sampled_points = self.fixed_num_sampled_points
         instances_list = []
         is_poly = False
-        # is_line = False
-        # import pdb;pdb.set_trace()
         for fixed_num_pts in fixed_num_sampled_points:
-            # [fixed_num, 2]
             is_poly = fixed_num_pts[0].equal(fixed_num_pts[-1])
             pts_num = fixed_num_pts.shape[0]
             shift_num = pts_num - 1
@@ -454,8 +448,6 @@ class LiDARInstanceLines(object):
             if not is_poly:
                 padding = torch.full([shift_num*2-shift_pts.shape[0],pts_num,2], self.padding_value)
                 shift_pts = torch.cat([shift_pts,padding],dim=0)
-                # padding = np.zeros((self.num_samples - len(sampled_points), 2))
-                # sampled_points = np.concatenate([sampled_points, padding], axis=0)
             instances_list.append(shift_pts)
         instances_tensor = torch.stack(instances_list, dim=0)
         instances_tensor = instances_tensor.to(
@@ -470,15 +462,12 @@ class LiDARInstanceLines(object):
         fixed_num_sampled_points = self.fixed_num_sampled_points_torch
         instances_list = []
         is_poly = False
-        # is_line = False
-        # import pdb;pdb.set_trace()
+
         for fixed_num_pts in fixed_num_sampled_points:
-            # [fixed_num, 2]
             is_poly = fixed_num_pts[0].equal(fixed_num_pts[-1])
             fixed_num = fixed_num_pts.shape[0]
             shift_pts_list = []
             if is_poly:
-                # import pdb;pdb.set_trace()
                 for shift_right_i in range(fixed_num):
                     shift_pts_list.append(fixed_num_pts.roll(shift_right_i,0))
             else:
@@ -492,21 +481,12 @@ class LiDARInstanceLines(object):
             if not is_poly:
                 padding = torch.full([fixed_num-shift_pts.shape[0],fixed_num,2], self.padding_value)
                 shift_pts = torch.cat([shift_pts,padding],dim=0)
-                # padding = np.zeros((self.num_samples - len(sampled_points), 2))
-                # sampled_points = np.concatenate([sampled_points, padding], axis=0)
             instances_list.append(shift_pts)
         instances_tensor = torch.stack(instances_list, dim=0)
         instances_tensor = instances_tensor.to(
                             dtype=torch.float32)
         return instances_tensor
 
-    # @property
-    # def polyline_points(self):
-    #     """
-    #     return [[x0,y0],[x1,y1],...]
-    #     """
-    #     assert len(self.instance_list) != 0
-    #     for instance in self.instance_list:
 
 
 class VectorizedLocalMap(object):
@@ -564,7 +544,6 @@ class VectorizedLocalMap(object):
 
         patch_box = (map_pose[0], map_pose[1], self.patch_size[0], self.patch_size[1])
         patch_angle = quaternion_yaw(rotation) / np.pi * 180
-        # import pdb;pdb.set_trace()
         vectors = []
         for vec_class in self.vec_classes:
             if vec_class == 'divider':
@@ -575,22 +554,17 @@ class VectorizedLocalMap(object):
                         vectors.append((instance, self.CLASS2LABEL.get(line_type, -1)))
             elif vec_class == 'ped_crossing':
                 ped_geom = self.get_map_geom(patch_box, patch_angle, self.ped_crossing_classes, location)
-                # ped_vector_list = self.ped_geoms_to_vectors(ped_geom)
                 ped_instance_list = self.ped_poly_geoms_to_instances(ped_geom)
-                # import pdb;pdb.set_trace()
                 for instance in ped_instance_list:
                     vectors.append((instance, self.CLASS2LABEL.get('ped_crossing', -1)))
             elif vec_class == 'boundary':
                 polygon_geom = self.get_map_geom(patch_box, patch_angle, self.polygon_classes, location)
-                # import pdb;pdb.set_trace()
                 poly_bound_list = self.poly_geoms_to_instances(polygon_geom)
-                # import pdb;pdb.set_trace()
                 for contour in poly_bound_list:
                     vectors.append((contour, self.CLASS2LABEL.get('contours', -1)))
             else:
                 raise ValueError(f'WRONG vec_class: {vec_class}')
 
-        # filter out -1
         filtered_vectors = []
         gt_pts_loc_3d = []
         gt_pts_num_3d = []
@@ -609,25 +583,19 @@ class VectorizedLocalMap(object):
             gt_vecs_label=gt_labels,
 
         )
-        # import pdb;pdb.set_trace()
         return anns_results
 
     def get_map_geom(self, patch_box, patch_angle, layer_names, location):
         map_geom = []
         for layer_name in layer_names:
             if layer_name in self.line_classes:
-                # import pdb;pdb.set_trace()
                 geoms = self.get_divider_line(patch_box, patch_angle, layer_name, location)
-                # import pdb;pdb.set_trace()
-                # geoms = self.map_explorer[location]._get_layer_line(patch_box, patch_angle, layer_name)
                 map_geom.append((layer_name, geoms))
             elif layer_name in self.polygon_classes:
                 geoms = self.get_contour_line(patch_box, patch_angle, layer_name, location)
-                # geoms = self.map_explorer[location]._get_layer_polygon(patch_box, patch_angle, layer_name)
                 map_geom.append((layer_name, geoms))
             elif layer_name in self.ped_crossing_classes:
                 geoms = self.get_ped_crossing_line(patch_box, patch_angle, location)
-                # geoms = self.map_explorer[location]._get_layer_polygon(patch_box, patch_angle, layer_name)
                 map_geom.append((layer_name, geoms))
         return map_geom
 
@@ -697,12 +665,10 @@ class VectorizedLocalMap(object):
         return self._one_type_line_geom_to_vectors(results)
 
     def ped_poly_geoms_to_instances(self, ped_geom):
-        # import pdb;pdb.set_trace()
         ped = ped_geom[0][1]
         union_segments = ops.unary_union(ped)
         max_x = self.patch_size[1] / 2
         max_y = self.patch_size[0] / 2
-        # local_patch = box(-max_x + 0.2, -max_y + 0.2, max_x - 0.2, max_y - 0.2)
         local_patch = box(-max_x - 0.2, -max_y - 0.2, max_x + 0.2, max_y + 0.2)
         exteriors = []
         interiors = []
@@ -909,16 +875,10 @@ class VectorizedLocalMap(object):
             distances = np.linspace(0, line.length, self.fixed_num)
             sampled_points = np.array([list(line.interpolate(distance).coords) for distance in distances]).reshape(-1, 2)
 
-            # tmpdistances = np.linspace(0, line.length, 2)
-            # tmpsampled_points = np.array([list(line.interpolate(tmpdistance).coords) for tmpdistance in tmpdistances]).reshape(-1, 2)
-        # import pdb;pdb.set_trace()
-        # if self.normalize:
-        #     sampled_points = sampled_points / np.array([self.patch_size[1], self.patch_size[0]])
 
         num_valid = len(sampled_points)
 
         if not self.padding or self.fixed_num > 0:
-            # fixed num sample can return now!
             return sampled_points, num_valid
 
         # fixed distance sampling need padding!
@@ -932,9 +892,6 @@ class VectorizedLocalMap(object):
                 sampled_points = sampled_points[:self.num_samples, :]
                 num_valid = self.num_samples
 
-            # if self.normalize:
-            #     sampled_points = sampled_points / np.array([self.patch_size[1], self.patch_size[0]])
-            #     num_valid = len(sampled_points)
 
         return sampled_points, num_valid
 
@@ -1053,18 +1010,9 @@ class CustomNuScenesLocalMapDataset(CustomNuScenesDataset):
             except:
                 # empty tensor, will be passed in train, 
                 # but we preserve it for test
-                
-                # import pdb;pdb.set_trace()
                 gt_vecs_pts_loc = gt_vecs_pts_loc
-        # import pdb;pdb.set_trace()
         example['gt_labels_3d'] = DC(gt_vecs_label, cpu_only=False)
         example['gt_bboxes_3d'] = DC(gt_vecs_pts_loc, cpu_only=True)
-        # import pdb;pdb.set_trace()
-        # if self.is_vis_on_test:
-        #     lidar2global_translation = to_tensor(lidar2global_translation)
-        #     example['lidar2global_translation'] = DC(lidar2global_translation, cpu_only=True)
-        # else:
-        # example['img_metas'].data['lidar2global_translation'] = lidar2global_translation
         return example
 
     def prepare_train_data(self, index):
@@ -1202,12 +1150,6 @@ class CustomNuScenesLocalMapDataset(CustomNuScenesDataset):
                 lidar2cam_rt[3, :3] = -lidar2cam_t
                 lidar2cam_rt_t = lidar2cam_rt.T
 
-                # add noise here
-                # translation: 0, 0.05, 0.1, 0.5, 1.0
-                # lidar2cam_rt_t = add_translation_noise(
-                #     lidar2cam_rt_t, std=0.05)
-                # rotation: 0, 0.005, 0.01, 0.02, 0.05
-                # lidar2cam_rt_t = add_rotation_noise(lidar2cam_rt_t, std=0.005)
                 if self.noise == 'rotation':
                     lidar2cam_rt_t = add_rotation_noise(lidar2cam_rt_t, std=self.noise_std)
                 elif self.noise == 'translation':
@@ -1302,7 +1244,6 @@ class CustomNuScenesLocalMapDataset(CustomNuScenesDataset):
             return data
     def _format_gt(self):
         gt_annos = []
-        # import pdb;pdb.set_trace()
         print('Start to convert gt map format...')
         assert self.map_ann_file is not None
         if (not os.path.exists(self.map_ann_file)) :
@@ -1366,15 +1307,13 @@ class CustomNuScenesLocalMapDataset(CustomNuScenesDataset):
             for i, vec in enumerate(vecs):
                 name = mapped_class_names[vec['label']]
                 anno = dict(
-                    # sample_token=sample_token,
                     pts=vec['pts'],
                     pts_num=len(vec['pts']),
                     cls_name=name,
                     type=vec['label'],
                     confidence_level=vec['score'])
                 pred_vec_list.append(anno)
-                # annos.append(nusc_anno)
-            # nusc_annos[sample_token] = annos
+
             pred_anno['vectors'] = pred_vec_list
             pred_annos.append(pred_anno)
 
@@ -1383,13 +1322,11 @@ class CustomNuScenesLocalMapDataset(CustomNuScenesDataset):
             self._format_gt()
         else:
             print(f'{self.map_ann_file} exist, not update')
-        # with open(self.map_ann_file,'r') as f:
-        #     GT_anns = json.load(f)
-        # gt_annos = GT_anns['GTs']
+
         nusc_submissions = {
             'meta': self.modality,
             'results': pred_annos,
-            # 'GTs': gt_annos
+
         }
 
         mmcv.mkdir_or_exist(jsonfile_prefix)
@@ -1442,7 +1379,6 @@ class CustomNuScenesLocalMapDataset(CustomNuScenesDataset):
         from projects.mmdet3d_plugin.datasets.map_utils.mean_ap import eval_map
         from projects.mmdet3d_plugin.datasets.map_utils.mean_ap import format_res_gt_by_classes
         result_path = osp.abspath(result_path)
-        # import pdb;pdb.set_trace()
         detail = dict()
         
         print('Formating results & gts by classes')
@@ -1563,7 +1499,6 @@ def output_to_vecs(detection):
     pts = detection['pts_3d'].numpy()
 
     vec_list = []
-    # import pdb;pdb.set_trace()
     for i in range(box3d.shape[0]):
         vec = dict(
             bbox = box3d[i], # xyxy
