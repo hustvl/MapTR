@@ -11,7 +11,7 @@ Train MapTR with 8 GPUs
 
 Eval MapTR with 8 GPUs
 ```
-./tools/dist_test_map.sh ./projects/configs/bevformer/maptr_tiny_r50_24e.py ./path/to/ckpts.pth 8
+./tools/dist_test_map.sh ./projects/configs/maptr/maptr_tiny_r50_24e.py ./path/to/ckpts.pth 8
 ```
 
 
