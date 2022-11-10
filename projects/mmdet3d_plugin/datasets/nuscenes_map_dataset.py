@@ -24,6 +24,48 @@ from mmdet.datasets.pipelines import to_tensor
 import json
 
 
+def add_rotation_noise(extrinsics, std=0.01, mean=0.0):
+    #n = extrinsics.shape[0]
+    noise_angle = torch.normal(mean, std=std, size=(3,))
+    # extrinsics[:, 0:3, 0:3] *= (1 + noise)
+    sin_noise = torch.sin(noise_angle)
+    cos_noise = torch.cos(noise_angle)
+    rotation_matrix = torch.eye(4).view(4, 4)
+    #  rotation_matrix[]
+    rotation_matrix_x = rotation_matrix.clone()
+    rotation_matrix_x[1, 1] = cos_noise[0]
+    rotation_matrix_x[1, 2] = sin_noise[0]
+    rotation_matrix_x[2, 1] = -sin_noise[0]
+    rotation_matrix_x[2, 2] = cos_noise[0]
+
+    rotation_matrix_y = rotation_matrix.clone()
+    rotation_matrix_y[0, 0] = cos_noise[1]
+    rotation_matrix_y[0, 2] = -sin_noise[1]
+    rotation_matrix_y[2, 0] = sin_noise[1]
+    rotation_matrix_y[2, 2] = cos_noise[1]
+
+    rotation_matrix_z = rotation_matrix.clone()
+    rotation_matrix_z[0, 0] = cos_noise[2]
+    rotation_matrix_z[0, 1] = sin_noise[2]
+    rotation_matrix_z[1, 0] = -sin_noise[2]
+    rotation_matrix_z[1, 1] = cos_noise[2]
+
+    rotation_matrix = rotation_matrix_x @ rotation_matrix_y @ rotation_matrix_z
+
+    rotation = torch.from_numpy(extrinsics.astype(np.float32))
+    rotation[:3, -1] = 0.0
+    # import pdb;pdb.set_trace()
+    rotation = rotation_matrix @ rotation
+    extrinsics[:3, :3] = rotation[:3, :3].numpy()
+    return extrinsics
+
+
+def add_translation_noise(extrinsics, std=0.01, mean=0.0):
+    # n = extrinsics.shape[0]
+    noise = torch.normal(mean, std=std, size=(3,))
+    extrinsics[0:3, -1] += noise.numpy()
+    return extrinsics
+
 class LiDARInstanceLines(object):
     """Line instance in LIDAR coordinates
 
@@ -914,6 +956,8 @@ class CustomNuScenesLocalMapDataset(CustomNuScenesDataset):
                  eval_use_same_gt_sample_num_flag=False,
                  padding_value=-10000,
                  map_classes=None,
+                 noise='None',
+                 noise_std=0,
                  *args, 
                  **kwargs):
         super().__init__(*args, **kwargs)
@@ -937,6 +981,8 @@ class CustomNuScenesLocalMapDataset(CustomNuScenesDataset):
                             fixed_ptsnum_per_line=fixed_ptsnum_per_line,
                             padding_value=self.padding_value)
         self.is_vis_on_test = False
+        self.noise = noise
+        self.noise_std = noise_std
     @classmethod
     def get_map_classes(cls, map_classes=None):
         """Get class names of current dataset.
@@ -1154,14 +1200,28 @@ class CustomNuScenesLocalMapDataset(CustomNuScenesDataset):
                 lidar2cam_rt = np.eye(4)
                 lidar2cam_rt[:3, :3] = lidar2cam_r.T
                 lidar2cam_rt[3, :3] = -lidar2cam_t
+                lidar2cam_rt_t = lidar2cam_rt.T
+
+                # add noise here
+                # translation: 0, 0.05, 0.1, 0.5, 1.0
+                # lidar2cam_rt_t = add_translation_noise(
+                #     lidar2cam_rt_t, std=0.05)
+                # rotation: 0, 0.005, 0.01, 0.02, 0.05
+                # lidar2cam_rt_t = add_rotation_noise(lidar2cam_rt_t, std=0.005)
+                if self.noise == 'rotation':
+                    lidar2cam_rt_t = add_rotation_noise(lidar2cam_rt_t, std=self.noise_std)
+                elif self.noise == 'translation':
+                    lidar2cam_rt_t = add_translation_noise(
+                        lidar2cam_rt_t, std=self.noise_std)
+
                 intrinsic = cam_info['cam_intrinsic']
                 viewpad = np.eye(4)
                 viewpad[:intrinsic.shape[0], :intrinsic.shape[1]] = intrinsic
-                lidar2img_rt = (viewpad @ lidar2cam_rt.T)
+                lidar2img_rt = (viewpad @ lidar2cam_rt_t)
                 lidar2img_rts.append(lidar2img_rt)
 
                 cam_intrinsics.append(viewpad)
-                lidar2cam_rts.append(lidar2cam_rt.T)
+                lidar2cam_rts.append(lidar2cam_rt_t)
 
                 # camera to ego transform
                 camera2ego = np.eye(4).astype(np.float32)
