@@ -15,6 +15,7 @@ ArXiv Preprint ([arXiv 2208.14437](https://arxiv.org/abs/2208.14437))
 #
 ### News
 
+* **`11 Nov, 2022`:** We release an initial version of MapTR.
 * **`31 Aug, 2022`:** We released our paper on Arxiv. Code/Models are coming soon. Please stay tuned! ☕️
 
 
