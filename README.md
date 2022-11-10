@@ -79,8 +79,8 @@ https://user-images.githubusercontent.com/31960625/187059706-f7f5a7d8-1d1d-46e0-
 
 - [ ] multi-modal checkpoints
 - [ ] multi-modal code
-- [ ] argoverse2 dataset process
-- [x] Nuscenes dataset process
+- [ ] argoverse2 dataset 
+- [x] Nuscenes dataset 
 - [x] MapTR checkpoints
 - [x] MapTR code
 - [x] Initialization
