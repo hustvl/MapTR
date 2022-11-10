@@ -30,16 +30,27 @@ MapTR-tiny significantly outperforms the existing state-of-the-art multi-modalit
 Qualitative results show that MapTR maintains stable and robust map construction quality in complex and various driving scenes. MapTR is of great application value in autonomous driving. 
 
 ## Models
-| Method | Backbone | Lr Schd | mAP| FPS|memroy | Config | Download |
-| :---: | :---: | :---: | :---: | :---:|:---:| :---: | :---: |
-| MapTR-nano | R18 | 110ep | 44.2 | 25.1| 11907M (bs 24) |[coming soon] |[coming soon] |
-| MapTR-tiny | R50 | 24ep | 50.3 | 11.2| 10287M (bs 4) | [coming soon]|[coming soon] |
-| MapTR-tiny | R50 | 110ep | 58.7|11.2| 10287M (bs 4)|[coming soon] |[coming soon] |
+> Results from the paper
+
+
+| Method | Backbone | Lr Schd | mAP| FPS|memroy | 
+| :---: | :---: | :---: | :---: | :---:|:---:|
+| MapTR-nano | R18 | 110ep | 44.2 | 25.1| 11907M (bs 24) |
+| MapTR-tiny | R50 | 24ep | 50.3 | 11.2| 10287M (bs 4) | 
+| MapTR-tiny | R50 | 110ep | 58.7|11.2| 10287M (bs 4)|
 
 **Notes**: 
 
 - FPS is measured on NVIDIA RTX3090 GPU with batch size of 1 (containing 6 view images).
 - All the experiments are performed on 8 NVIDIA GeForce RTX 3090 GPUs. 
+
+> Results from this repo, we refactor the code and rerun the experiments, the results are slightly different.
+
+| Method | Backbone | Lr Schd | mAP| FPS|memroy | Config | Download |
+| :---: | :---: | :---: | :---: | :---:|:---:| :---: | :---: |
+| MapTR-nano | R18 | 110ep |[coming soon]  | 25.1| 11907M (bs 24) |[config](projects/configs/maptr/maptr_nano_r18_110e.py) |[coming soon] |
+| MapTR-tiny | R50 | 24ep | 50.0 | 11.2| 10287M (bs 4) | [config](projects/configs/maptr/maptr_tiny_r50_24e.py)|[model](https://drive.google.com/file/d/1n1FUFnRqdskvmpLdnsuX_VK6pET19h95/view?usp=share_link) / [log](https://drive.google.com/file/d/1nvPkk0EMHV8Q82E9usEKKYx7P38bCx1U/view?usp=share_link) |
+| MapTR-tiny | R50 | 110ep | 59.3 |11.2| 10287M (bs 4)|[config](projects/configs/maptr/maptr_tiny_r50_110e.py) |[model](https://drive.google.com/file/d/1SCF93LEEmXU0hMwPiUz9p2CWbL1FpB1h/view?usp=share_link) / [log](https://drive.google.com/file/d/1TQ4j_0Sf2ipzeYsEZZAHYzX4dCUaBqyp/view?usp=share_link) |
 
 ## Qualitative results on nuScenes val set
 <div align="center"><h4>MapTR maintains stable and robust map construction quality in various driving scenes.</h4></div>
@@ -57,8 +68,21 @@ https://user-images.githubusercontent.com/31960625/187059697-94622ddb-e76a-4fa7-
 https://user-images.githubusercontent.com/31960625/187059706-f7f5a7d8-1d1d-46e0-8be3-c770cf96d694.mp4
 
 
-## Usage
-coming soon
+## Getting Started
+- [Installation](docs/install.md)
+- [Prepare Dataset](docs/prepare_dataset.md)
+- [Train and Eval](docs/train_eval.md)
+
+
+## Catalog
+
+- [ ] multi-modal checkpoints
+- [ ] multi-modal code
+- [ ] argoverse2 dataset process
+- [x] Nuscenes dataset process
+- [x] MapTR checkpoints
+- [x] MapTR code
+- [x] Initialization
 
 ## Citation
 If you find MapTR is useful in your research or applications, please consider giving us a star 🌟 and citing it by the following BibTeX entry.
