@@ -31,7 +31,7 @@ MapTR-tiny significantly outperforms the existing state-of-the-art multi-modalit
 Qualitative results show that MapTR maintains stable and robust map construction quality in complex and various driving scenes. MapTR is of great application value in autonomous driving. 
 
 ## Models
-> Results from the paper
+> Results from the [paper](https://arxiv.org/abs/2208.14437)
 
 
 | Method | Backbone | Lr Schd | mAP| FPS|memroy | 
