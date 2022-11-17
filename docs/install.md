@@ -54,7 +54,13 @@ python setup.py build install
 
 ```
 
-**h. Prepare pretrained models.**
+**h. Install other requirements.**
+```shell
+cd /path/to/MapTR
+pip install -r requirement.txt
+```
+
+**i. Prepare pretrained models.**
 ```shell
 cd /path/to/MapTR
 mkdir ckpts
