@@ -23,6 +23,7 @@ ArXiv Preprint ([arXiv 2208.14437](https://arxiv.org/abs/2208.14437))
 <div align="center"><h4>MapTR is a simple, fast and strong online vectorized HD map construction framework.</h4></div>
 
 ![framework](assets/framework.png "framework")
+
 We present MapTR, a structured  end-to-end framework for efficient online vectorized HD map construction. 
 We propose a unified  permutation-based modeling approach,
 *ie*, modeling map element as a point set with a group of equivalent permutations, which avoids the definition ambiguity of map element and eases learning.
