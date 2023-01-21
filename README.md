@@ -10,6 +10,8 @@
 
 ArXiv Preprint ([arXiv 2208.14437](https://arxiv.org/abs/2208.14437))
 
+[openreview ICLR'23](https://openreview.net/forum?id=k7p_YAO7yE), accepted as **ICLR Spotlight**
+
 </div>
 
 #
