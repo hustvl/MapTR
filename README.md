@@ -95,10 +95,10 @@ MapTR is based on [mmdetection3d](https://github.com/open-mmlab/mmdetection3d). 
 ## Citation
 If you find MapTR is useful in your research or applications, please consider giving us a star 🌟 and citing it by the following BibTeX entry.
 ```bibtex
-@article{MapTR,
+@inproceedings{MapTR,
   title={MapTR: Structured Modeling and Learning for Online Vectorized HD Map Construction},
   author={Liao, Bencheng and Chen, Shaoyu and Wang, Xinggang and Cheng, Tianheng, and Zhang, Qian and Liu, Wenyu and Huang, Chang},
-  journal={arXiv preprint arXiv:2208.14437},
-  year={2022}
+  booktitle={International Conference on Learning Representations},
+  year={2023}
 }
 ```
