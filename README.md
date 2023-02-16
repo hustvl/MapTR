@@ -80,6 +80,7 @@ https://user-images.githubusercontent.com/31960625/187059706-f7f5a7d8-1d1d-46e0-
 
 ## Catalog
 
+- [ ] centerline detection & topology support
 - [ ] multi-modal checkpoints
 - [ ] multi-modal code
 - [ ] argoverse2 dataset 
