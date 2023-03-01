@@ -48,13 +48,13 @@ Qualitative results show that MapTR maintains stable and robust map construction
 - FPS is measured on NVIDIA RTX3090 GPU with batch size of 1 (containing 6 view images).
 - All the experiments are performed on 8 NVIDIA GeForce RTX 3090 GPUs. 
 
-> Results from this repo, we refactor the code and rerun the experiments, the results are slightly different.
+> Results from this repo. FPSs are much higher.
 
 | Method | Backbone | Lr Schd | mAP| FPS|memroy | Config | Download |
 | :---: | :---: | :---: | :---: | :---:|:---:| :---: | :---: |
-| MapTR-nano | R18 | 110ep |46.3  | 25.1| 11907M (bs 24) |[config](projects/configs/maptr/maptr_nano_r18_110e.py) |[model](https://drive.google.com/file/d/1-wVO1pZhFif2igJoz-s451swQvPSto2m/view?usp=sharing) / [log](https://drive.google.com/file/d/1Hd25seDQKn8Vv6AQxPfSoiu-tY2i4Haa/view?usp=sharing) |
-| MapTR-tiny | R50 | 24ep | 50.0 | 11.2| 10287M (bs 4) | [config](projects/configs/maptr/maptr_tiny_r50_24e.py)|[model](https://drive.google.com/file/d/1n1FUFnRqdskvmpLdnsuX_VK6pET19h95/view?usp=share_link) / [log](https://drive.google.com/file/d/1nvPkk0EMHV8Q82E9usEKKYx7P38bCx1U/view?usp=share_link) |
-| MapTR-tiny | R50 | 110ep | 59.3 |11.2| 10287M (bs 4)|[config](projects/configs/maptr/maptr_tiny_r50_110e.py) |[model](https://drive.google.com/file/d/1SCF93LEEmXU0hMwPiUz9p2CWbL1FpB1h/view?usp=share_link) / [log](https://drive.google.com/file/d/1TQ4j_0Sf2ipzeYsEZZAHYzX4dCUaBqyp/view?usp=share_link) |
+| MapTR-nano | R18 | 110ep |46.3  |48.2| 11907M (bs 24) |[config](projects/configs/maptr/maptr_nano_r18_110e.py) |[model](https://drive.google.com/file/d/1-wVO1pZhFif2igJoz-s451swQvPSto2m/view?usp=sharing) / [log](https://drive.google.com/file/d/1Hd25seDQKn8Vv6AQxPfSoiu-tY2i4Haa/view?usp=sharing) |
+| MapTR-tiny | R50 | 24ep | 50.0 |18.4| 10287M (bs 4) | [config](projects/configs/maptr/maptr_tiny_r50_24e.py)|[model](https://drive.google.com/file/d/1n1FUFnRqdskvmpLdnsuX_VK6pET19h95/view?usp=share_link) / [log](https://drive.google.com/file/d/1nvPkk0EMHV8Q82E9usEKKYx7P38bCx1U/view?usp=share_link) |
+| MapTR-tiny | R50 | 110ep | 59.3 |18.4| 10287M (bs 4)|[config](projects/configs/maptr/maptr_tiny_r50_110e.py) |[model](https://drive.google.com/file/d/1SCF93LEEmXU0hMwPiUz9p2CWbL1FpB1h/view?usp=share_link) / [log](https://drive.google.com/file/d/1TQ4j_0Sf2ipzeYsEZZAHYzX4dCUaBqyp/view?usp=share_link) |
 
 ## Qualitative results on nuScenes val set
 <div align="center"><h4>MapTR maintains stable and robust map construction quality in various driving scenes.</h4></div>
