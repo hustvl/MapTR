@@ -28,7 +28,7 @@ import cv2
 
 CAMS = ['CAM_FRONT_LEFT','CAM_FRONT','CAM_FRONT_RIGHT',
              'CAM_BACK_LEFT','CAM_BACK','CAM_BACK_RIGHT',]
-
+# we choose these samples not because it is easy but because it is hard
 CANDIDATE=['n008-2018-08-01-15-16-36-0400_1533151184047036',
            'n008-2018-08-01-15-16-36-0400_1533151200646853',
            'n008-2018-08-01-15-16-36-0400_1533151274047332',
