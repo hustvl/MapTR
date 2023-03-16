@@ -83,7 +83,7 @@ https://user-images.githubusercontent.com/31960625/187059706-f7f5a7d8-1d1d-46e0-
 ## Catalog
 
 - [ ] centerline detection & topology support
-- [ ] multi-modal checkpoints
+- [x] multi-modal checkpoints
 - [x] multi-modal code
 - [ ] lidar modality code
 - [ ] argoverse2 dataset 
