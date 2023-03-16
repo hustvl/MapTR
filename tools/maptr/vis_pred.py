@@ -1,6 +1,7 @@
 import argparse
 import mmcv
 import os
+import shutil
 import torch
 import warnings
 from mmcv import Config, DictAction
@@ -23,6 +24,41 @@ from PIL import Image
 import matplotlib.pyplot as plt
 from matplotlib import transforms
 from matplotlib.patches import Rectangle
+import cv2
+
+CAMS = ['CAM_FRONT_LEFT','CAM_FRONT','CAM_FRONT_RIGHT',
+             'CAM_BACK_LEFT','CAM_BACK','CAM_BACK_RIGHT',]
+# we choose these samples not because it is easy but because it is hard
+CANDIDATE=['n008-2018-08-01-15-16-36-0400_1533151184047036',
+           'n008-2018-08-01-15-16-36-0400_1533151200646853',
+           'n008-2018-08-01-15-16-36-0400_1533151274047332',
+           'n008-2018-08-01-15-16-36-0400_1533151369947807',
+           'n008-2018-08-01-15-16-36-0400_1533151581047647',
+           'n008-2018-08-01-15-16-36-0400_1533151585447531',
+           'n008-2018-08-01-15-16-36-0400_1533151741547700',
+           'n008-2018-08-01-15-16-36-0400_1533151854947676',
+           'n008-2018-08-22-15-53-49-0400_1534968048946931',
+           'n008-2018-08-22-15-53-49-0400_1534968255947662',
+           'n008-2018-08-01-15-16-36-0400_1533151616447606',
+           'n015-2018-07-18-11-41-49+0800_1531885617949602',
+           'n008-2018-08-28-16-43-51-0400_1535489136547616',
+           'n008-2018-08-28-16-43-51-0400_1535489145446939',
+           'n008-2018-08-28-16-43-51-0400_1535489152948944',
+           'n008-2018-08-28-16-43-51-0400_1535489299547057',
+           'n008-2018-08-28-16-43-51-0400_1535489317946828',
+           'n008-2018-09-18-15-12-01-0400_1537298038950431',
+           'n008-2018-09-18-15-12-01-0400_1537298047650680',
+           'n008-2018-09-18-15-12-01-0400_1537298056450495',
+           'n008-2018-09-18-15-12-01-0400_1537298074700410',
+           'n008-2018-09-18-15-12-01-0400_1537298088148941',
+           'n008-2018-09-18-15-12-01-0400_1537298101700395',
+           'n015-2018-11-21-19-21-35+0800_1542799330198603',
+           'n015-2018-11-21-19-21-35+0800_1542799345696426',
+           'n015-2018-11-21-19-21-35+0800_1542799353697765',
+           'n015-2018-11-21-19-21-35+0800_1542799525447813',
+           'n015-2018-11-21-19-21-35+0800_1542799676697935',
+           'n015-2018-11-21-19-21-35+0800_1542799758948001',
+           ]
 
 def perspective(cam_coords, proj_mat):
     pix_coords = proj_mat @ cam_coords
@@ -36,9 +72,7 @@ def parse_args():
     parser = argparse.ArgumentParser(description='vis hdmaptr map gt label')
     parser.add_argument('config', help='test config file path')
     parser.add_argument('checkpoint', help='checkpoint file')
-    parser.add_argument('--samples', default=2000, help='samples to visualize')
-    parser.add_argument(
-        '--log-interval', default=50, help='interval of logging')
+    parser.add_argument('--score-thresh', default=0.4, type=float, help='samples to visualize')
     parser.add_argument(
         '--show-dir', help='directory where visualizations will be saved')
     parser.add_argument('--show-cam', action='store_true', help='show camera pic')
@@ -46,7 +80,7 @@ def parse_args():
         '--gt-format',
         type=str,
         nargs='+',
-        default=['se_points',],
+        default=['fixed_num_pts',],
         help='vis format, default should be "points",'
         'support ["se_pts","bbox","fixed_num_pts","polyline_pts"]')
     args = parser.parse_args()
@@ -130,7 +164,7 @@ def main():
     # build the model and load checkpoint
     # import pdb;pdb.set_trace()
     cfg.model.train_cfg = None
-    cfg.model.pts_bbox_head.bbox_coder.max_num=15 # TODO this is a hack
+    # cfg.model.pts_bbox_head.bbox_coder.max_num=15 # TODO this is a hack
     model = build_model(cfg.model, test_cfg=cfg.get('test_cfg'))
     fp16_cfg = cfg.get('fp16', None)
     if fp16_cfg is not None:
@@ -165,7 +199,7 @@ def main():
     car_img = Image.open('./figs/lidar_car.png')
 
     # get color map: divider->r, ped->b, boundary->g
-    colors_plt = ['r', 'b', 'g']
+    colors_plt = ['orange', 'b', 'g']
 
 
     logger.info('BEGIN vis test dataset samples gt label & pred')
@@ -176,18 +210,17 @@ def main():
     mask_results = []
     dataset = data_loader.dataset
     have_mask = False
+    # prog_bar = mmcv.ProgressBar(len(CANDIDATE))
     prog_bar = mmcv.ProgressBar(len(dataset))
     # import pdb;pdb.set_trace()
     for i, data in enumerate(data_loader):
         if ~(data['gt_labels_3d'].data[0][0] != -1).any():
             # import pdb;pdb.set_trace()
             logger.error(f'\n empty gt for index {i}, continue')
-            prog_bar.update()  
+            # prog_bar.update()  
             continue
-        with torch.no_grad():
-            result = model(return_loss=False, rescale=True, **data)
+       
         
-        # import pdb;pdb.set_trace()
         img = data['img'][0].data[0]
         img_metas = data['img_metas'][0].data[0]
         gt_bboxes_3d = data['gt_bboxes_3d'].data[0]
@@ -196,64 +229,47 @@ def main():
         pts_filename = img_metas[0]['pts_filename']
         pts_filename = osp.basename(pts_filename)
         pts_filename = pts_filename.replace('__LIDAR_TOP__', '_').split('.')[0]
+        # import pdb;pdb.set_trace()
+        # if pts_filename not in CANDIDATE:
+        #     continue
+
+        with torch.no_grad():
+            result = model(return_loss=False, rescale=True, **data)
         sample_dir = osp.join(args.show_dir, pts_filename)
         mmcv.mkdir_or_exist(osp.abspath(sample_dir))
 
-        if args.show_cam:
-            img_list = [img[0,i].permute(1,2,0).contiguous().numpy() for i in range(int(img.size(1)))]
-            img_list = [mmcv.imdenormalize(img, mean, std, to_bgr=to_bgr) for img in img_list]
-            filename_list = img_metas[0]['filename']
-            img_path_list = []
-            # save cam img for sample
-            for img, filename in zip(img_list, filename_list):
-                filename = osp.basename(filename)
-                filename_splits = filename.split('__')
-                # sample_dir = filename_splits[0]
-                # sample_dir = osp.join(args.show_dir, sample_dir)
-                # mmcv.mkdir_or_exist(osp.abspath(sample_dir))
-                img_name = filename_splits[1] + '.jpg'
-                img_path = osp.join(sample_dir,img_name)
-                img_path_list.append(img_path)
-                mmcv.imwrite(img, img_path)
-            
-            # import pdb;pdb.set_trace()
-            # lidar2global_translation = data['lidar2global_translation'].data[0][0]
-            # # visualize label on CAM
-            # for cam_img_path, lidar2img in zip(img_path_list, img_metas[0]['lidar2img']):
-            #     img = Image.open(cam_img_path)
-            #     plt.figure(figsize=(9, 16))
-            #     fig = plt.imshow(img)
-            #     fig.axes.get_xaxis().set_visible(False)
-            #     fig.axes.get_yaxis().set_visible(False)
-            #     # plt.xlim(img_metas[0]['img_shape'][0][1], 0)
-            #     plt.ylim(img_metas[0]['img_shape'][0][0], 0)
-            #     plt.xlim(0,img_metas[0]['img_shape'][0][1])
-            #     # plt.ylim(0,img_metas[0]['img_shape'][0][0])
-            #     plt.axis('off')
-            #     for gt_bbox_3d, gt_label_3d in zip(gt_bboxes_3d[0], gt_labels_3d[0]):
-            #         pts = gt_bbox_3d.reshape(-1,2)
-            #         pts_num = pts.size(0)
-            #         zeros = np.zeros((pts_num, 1))
-            #         zeros[:] = -lidar2global_translation[-1]
-            #         ones = np.ones((pts_num, 1))
-
-            #         lidar_coords = np.concatenate([pts, zeros, ones], axis=1).transpose(1, 0)
-            #         pix_coords = perspective(lidar_coords, lidar2img)
-            #         x = np.array([pts[0] for pts in pix_coords])
-            #         y = np.array([pts[1] for pts in pix_coords])
-
-            #         plt.quiver(x[:-1], y[:-1], x[1:] - x[:-1], y[1:] - y[:-1], scale_units='xy',
-            #                 angles='xy', scale=1, color=colors_plt[gt_label_3d])
-            #     plt.savefig(cam_img_path, bbox_inches='tight', pad_inches=0, dpi=400)
-            #     plt.close()
-            # import pdb;pdb.set_trace()
-
-
-        # plt.figure(figsize=(2, 4))
-        # plt.xlim(pc_range[0], pc_range[3])
-        # plt.ylim(pc_range[1], pc_range[4])
-        # plt.axis('off')
-        # import pdb;pdb.set_trace()
+        filename_list = img_metas[0]['filename']
+        img_path_dict = {}
+        # save cam img for sample
+        for filepath in filename_list:
+            filename = osp.basename(filepath)
+            filename_splits = filename.split('__')
+            # sample_dir = filename_splits[0]
+            # sample_dir = osp.join(args.show_dir, sample_dir)
+            # mmcv.mkdir_or_exist(osp.abspath(sample_dir))
+            img_name = filename_splits[1] + '.jpg'
+            img_path = osp.join(sample_dir,img_name)
+            # img_path_list.append(img_path)
+            shutil.copyfile(filepath,img_path)
+            img_path_dict[filename_splits[1]] = img_path
+         
+        # surrounding view
+        row_1_list = []
+        for cam in CAMS[:3]:
+            cam_img_name = cam + '.jpg'
+            cam_img = cv2.imread(osp.join(sample_dir, cam_img_name))
+            row_1_list.append(cam_img)
+        row_2_list = []
+        for cam in CAMS[3:]:
+            cam_img_name = cam + '.jpg'
+            cam_img = cv2.imread(osp.join(sample_dir, cam_img_name))
+            row_2_list.append(cam_img)
+        row_1_img=cv2.hconcat(row_1_list)
+        row_2_img=cv2.hconcat(row_2_list)
+        cams_img = cv2.vconcat([row_1_img,row_2_img])
+        cams_img_path = osp.join(sample_dir,'surroud_view.jpg')
+        cv2.imwrite(cams_img_path, cams_img,[cv2.IMWRITE_JPEG_QUALITY, 70])
+        
         for vis_format in args.gt_format:
             if vis_format == 'se_pts':
                 gt_line_points = gt_bboxes_3d[0].start_end_points
@@ -285,14 +301,18 @@ def main():
                     pts = gt_bbox_3d.numpy()
                     x = np.array([pt[0] for pt in pts])
                     y = np.array([pt[1] for pt in pts])
-                    plt.quiver(x[:-1], y[:-1], x[1:] - x[:-1], y[1:] - y[:-1], scale_units='xy', angles='xy', scale=1, color=colors_plt[gt_label_3d])
+                    # plt.quiver(x[:-1], y[:-1], x[1:] - x[:-1], y[1:] - y[:-1], scale_units='xy', angles='xy', scale=1, color=colors_plt[gt_label_3d])
+
+                    
+                    plt.plot(x, y, color=colors_plt[gt_label_3d],linewidth=1,alpha=0.8,zorder=-1)
+                    plt.scatter(x, y, color=colors_plt[gt_label_3d],s=2,alpha=0.8,zorder=-1)
                     # plt.plot(x, y, color=colors_plt[gt_label_3d])
                     # plt.scatter(x, y, color=colors_plt[gt_label_3d],s=1)
                 plt.imshow(car_img, extent=[-1.2, 1.2, -1.5, 1.5])
 
-                map_path = osp.join(sample_dir, 'GT_fixednum_pts_MAP.jpg')
-                plt.savefig(map_path, bbox_inches='tight', dpi=400)
-                plt.close()      
+                gt_fixedpts_map_path = osp.join(sample_dir, 'GT_fixednum_pts_MAP.png')
+                plt.savefig(gt_fixedpts_map_path, bbox_inches='tight', format='png',dpi=1200)
+                plt.close()   
             elif vis_format == 'polyline_pts':
                 plt.figure(figsize=(2, 4))
                 plt.xlim(pc_range[0], pc_range[3])
@@ -305,25 +325,21 @@ def main():
                     x = np.array([pt[0] for pt in pts])
                     y = np.array([pt[1] for pt in pts])
                     
-                    plt.quiver(x[:-1], y[:-1], x[1:] - x[:-1], y[1:] - y[:-1], scale_units='xy', angles='xy', scale=1, color=colors_plt[gt_label_3d])
+                    # plt.quiver(x[:-1], y[:-1], x[1:] - x[:-1], y[1:] - y[:-1], scale_units='xy', angles='xy', scale=1, color=colors_plt[gt_label_3d])
+
                     # plt.plot(x, y, color=colors_plt[gt_label_3d])
-                    # plt.scatter(x, y, color=colors_plt[gt_label_3d],s=1)
-                    # plt.plot(x, y, color=colors_plt[gt_label_3d])
+                    plt.plot(x, y, color=colors_plt[gt_label_3d],linewidth=1,alpha=0.8,zorder=-1)
+                    plt.scatter(x, y, color=colors_plt[gt_label_3d],s=1,alpha=0.8,zorder=-1)
                 plt.imshow(car_img, extent=[-1.2, 1.2, -1.5, 1.5])
 
-                map_path = osp.join(sample_dir, 'GT_polyline_MAP.jpg')
-                plt.savefig(map_path, bbox_inches='tight', dpi=400)
-                plt.close()        
+                gt_polyline_map_path = osp.join(sample_dir, 'GT_polyline_pts_MAP.png')
+                plt.savefig(gt_polyline_map_path, bbox_inches='tight', format='png',dpi=1200)
+                plt.close()           
 
             else: 
                 logger.error(f'WRONG visformat for GT: {vis_format}')
                 raise ValueError(f'WRONG visformat for GT: {vis_format}')
 
-        # plt.imshow(car_img, extent=[-1.2, 1.2, -1.5, 1.5])
-
-        # map_path = osp.join(sample_dir, 'GT_MAP.jpg')
-        # plt.savefig(map_path, bbox_inches='tight', dpi=400)
-        # plt.close()
 
         # import pdb;pdb.set_trace()
         plt.figure(figsize=(2, 4))
@@ -338,18 +354,21 @@ def main():
         scores_3d = result_dic['scores_3d']
         labels_3d = result_dic['labels_3d']
         pts_3d = result_dic['pts_3d']
-        for pred_score_3d, pred_bbox_3d, pred_label_3d, pred_pts_3d in zip(scores_3d, boxes_3d,labels_3d, pts_3d):
-            # pts = pred_bbox_3d.reshape(-1,2)
-            # x = np.array([pt[0] for pt in pts])
-            # y = np.array([pt[1] for pt in pts])
-            # plt.quiver(x[:-1], y[:-1], x[1:] - x[:-1], y[1:] - y[:-1], scale_units='xy', angles='xy', scale=1, color=colors_plt[pred_label_3d])
-            
+        keep = scores_3d > args.score_thresh
+
+        plt.figure(figsize=(2, 4))
+        plt.xlim(pc_range[0], pc_range[3])
+        plt.ylim(pc_range[1], pc_range[4])
+        plt.axis('off')
+        for pred_score_3d, pred_bbox_3d, pred_label_3d, pred_pts_3d in zip(scores_3d[keep], boxes_3d[keep],labels_3d[keep], pts_3d[keep]):
+
             pred_pts_3d = pred_pts_3d.numpy()
             pts_x = pred_pts_3d[:,0]
             pts_y = pred_pts_3d[:,1]
-            # plt.plot(pts_x, pts_x, color=colors_plt[gt_label_3d])
-            # plt.scatter(pts_x, pts_y, s=1,color=colors_plt[pred_label_3d])
-            plt.quiver(pts_x[:-1], pts_y[:-1], pts_x[1:] - pts_x[:-1], pts_y[1:] - pts_y[:-1], scale_units='xy', angles='xy', scale=1, color=colors_plt[pred_label_3d])
+            plt.plot(pts_x, pts_y, color=colors_plt[pred_label_3d],linewidth=1,alpha=0.8,zorder=-1)
+            plt.scatter(pts_x, pts_y, color=colors_plt[pred_label_3d],s=1,alpha=0.8,zorder=-1)
+
+
             pred_bbox_3d = pred_bbox_3d.numpy()
             xy = (pred_bbox_3d[0],pred_bbox_3d[1])
             width = pred_bbox_3d[2] - pred_bbox_3d[0]
@@ -357,16 +376,16 @@ def main():
             pred_score_3d = float(pred_score_3d)
             pred_score_3d = round(pred_score_3d, 2)
             s = str(pred_score_3d)
-            # import pdb;pdb.set_trace()
-            # plt.gca().add_patch(Rectangle(xy,width,height,linewidth=0.4,edgecolor=colors_plt[pred_label_3d],facecolor='none'))
-            plt.text(pts_x[0], pts_y[0], s,  fontsize=2)
+
+
 
         plt.imshow(car_img, extent=[-1.2, 1.2, -1.5, 1.5])
 
-        map_path = osp.join(sample_dir, 'PRED_MAP.jpg')
-        plt.savefig(map_path, bbox_inches='tight', dpi=400)
+        map_path = osp.join(sample_dir, 'PRED_MAP_plot.png')
+        plt.savefig(map_path, bbox_inches='tight', format='png',dpi=1200)
         plt.close()
-        # import pdb;pdb.set_trace()
+
+        
         prog_bar.update()
 
     logger.info('\n DONE vis test dataset samples gt label & pred')

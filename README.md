@@ -76,6 +76,7 @@ https://user-images.githubusercontent.com/31960625/187059706-f7f5a7d8-1d1d-46e0-
 - [Installation](docs/install.md)
 - [Prepare Dataset](docs/prepare_dataset.md)
 - [Train and Eval](docs/train_eval.md)
+- [Visualization](docs/visualization.md)
 
 
 ## Catalog
