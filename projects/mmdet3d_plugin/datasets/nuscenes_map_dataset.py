@@ -1113,7 +1113,8 @@ class CustomNuScenesLocalMapDataset(CustomNuScenesDataset):
         # standard protocal modified from SECOND.Pytorch
         input_dict = dict(
             sample_idx=info['token'],
-            pts_filename=info['lidar_path'],
+            # pts_filename=info['lidar_path'],
+            lidar_path=info["lidar_path"],
             sweeps=info['sweeps'],
             ego2global_translation=info['ego2global_translation'],
             ego2global_rotation=info['ego2global_rotation'],
@@ -1124,7 +1125,7 @@ class CustomNuScenesLocalMapDataset(CustomNuScenesDataset):
             scene_token=info['scene_token'],
             can_bus=info['can_bus'],
             frame_idx=info['frame_idx'],
-            timestamp=info['timestamp'] / 1e6,
+            timestamp=info['timestamp'],
             map_location = info['map_location'],
         )
         # lidar to ego transform

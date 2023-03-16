@@ -12,6 +12,25 @@ from torchvision.transforms.functional import rotate
 from projects.mmdet3d_plugin.bevformer.modules.temporal_self_attention import TemporalSelfAttention
 from projects.mmdet3d_plugin.bevformer.modules.spatial_cross_attention import MSDeformableAttention3D
 from projects.mmdet3d_plugin.bevformer.modules.decoder import CustomMSDeformableAttention
+from .builder import build_fuser, FUSERS
+from typing import List
+
+@FUSERS.register_module()
+class ConvFuser(nn.Sequential):
+    def __init__(self, in_channels: int, out_channels: int) -> None:
+        self.in_channels = in_channels
+        self.out_channels = out_channels
+        super().__init__(
+            nn.Conv2d(sum(in_channels), out_channels, 3, padding=1, bias=False),
+            nn.BatchNorm2d(out_channels),
+            nn.ReLU(True),
+        )
+
+    def forward(self, inputs: List[torch.Tensor]) -> torch.Tensor:
+        return super().forward(torch.cat(inputs, dim=1))
+
+
+
 @TRANSFORMER.register_module()
 class MapTRPerceptionTransformer(BaseModule):
     """Implements the Detr3D transformer.
@@ -28,6 +47,7 @@ class MapTRPerceptionTransformer(BaseModule):
                  num_feature_levels=4,
                  num_cams=6,
                  two_stage_num_proposals=300,
+                 fuser=None,
                  encoder=None,
                  decoder=None,
                  embed_dims=256,
@@ -37,8 +57,11 @@ class MapTRPerceptionTransformer(BaseModule):
                  can_bus_norm=True,
                  use_cams_embeds=True,
                  rotate_center=[100, 100],
+                 modality='vision',
                  **kwargs):
         super(MapTRPerceptionTransformer, self).__init__(**kwargs)
+        if modality == 'fusion':
+            self.fuser = build_fuser(fuser) #TODO
         self.encoder = build_transformer_layer_sequence(encoder)
         self.decoder = build_transformer_layer_sequence(decoder)
         self.embed_dims = embed_dims
@@ -93,6 +116,7 @@ class MapTRPerceptionTransformer(BaseModule):
     def get_bev_features(
             self,
             mlvl_feats,
+            lidar_feat,
             bev_queries,
             bev_h,
             bev_w,
@@ -185,12 +209,20 @@ class MapTRPerceptionTransformer(BaseModule):
             shift=shift,
             **kwargs
         )
+        if lidar_feat is not None:
+            bev_embed = bev_embed.view(bs, bev_h, bev_w, -1).permute(0,3,1,2).contiguous()
+            lidar_feat = lidar_feat.permute(0,1,3,2).contiguous() # B C H W
+            lidar_feat = nn.functional.interpolate(lidar_feat, size=(bev_h,bev_w), mode='bicubic', align_corners=False)
+            fused_bev = self.fuser([bev_embed, lidar_feat])
+            fused_bev = fused_bev.flatten(2).permute(0,2,1).contiguous()
+            bev_embed = fused_bev
 
         return bev_embed
     # TODO apply fp16 to this module cause grad_norm NAN
     # @auto_fp16(apply_to=('mlvl_feats', 'bev_queries', 'object_query_embed', 'prev_bev', 'bev_pos'))
     def forward(self,
                 mlvl_feats,
+                lidar_feat,
                 bev_queries,
                 object_query_embed,
                 bev_h,
@@ -240,6 +272,7 @@ class MapTRPerceptionTransformer(BaseModule):
 
         bev_embed = self.get_bev_features(
             mlvl_feats,
+            lidar_feat,
             bev_queries,
             bev_h,
             bev_w,

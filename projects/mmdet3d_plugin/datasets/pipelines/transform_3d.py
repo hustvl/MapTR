@@ -328,3 +328,28 @@ class RandomScaleImageMultiViewImage(object):
         repr_str = self.__class__.__name__
         repr_str += f'(size={self.scales}, '
         return repr_str
+
+
+@PIPELINES.register_module()
+class CustomPointsRangeFilter:
+    """Filter points by the range.
+    Args:
+        point_cloud_range (list[float]): Point cloud range.
+    """
+
+    def __init__(self, point_cloud_range):
+        self.pcd_range = np.array(point_cloud_range, dtype=np.float32)
+
+    def __call__(self, data):
+        """Call function to filter points by the range.
+        Args:
+            data (dict): Result dict from loading pipeline.
+        Returns:
+            dict: Results after filtering, 'points', 'pts_instance_mask' \
+                and 'pts_semantic_mask' keys are updated in the result dict.
+        """
+        points = data["points"]
+        points_mask = points.in_range_3d(self.pcd_range)
+        clean_points = points[points_mask]
+        data["points"] = clean_points
+        return data
