@@ -1113,7 +1113,7 @@ class CustomNuScenesLocalMapDataset(CustomNuScenesDataset):
         # standard protocal modified from SECOND.Pytorch
         input_dict = dict(
             sample_idx=info['token'],
-            # pts_filename=info['lidar_path'],
+            pts_filename=info['lidar_path'],
             lidar_path=info["lidar_path"],
             sweeps=info['sweeps'],
             ego2global_translation=info['ego2global_translation'],
