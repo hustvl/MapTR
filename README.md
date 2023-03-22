@@ -16,6 +16,7 @@ ArXiv Preprint ([arXiv 2208.14437](https://arxiv.org/abs/2208.14437))
 
 #
 ### News
+* **`22 Mar, 2023`:** By leveraging MapTR, VAD ([paper](https://arxiv.org/abs/2303.12077), [code](https://github.com/hustvl/VAD))  models the driving scene as fully vectorized representation, achieving SoTA end-to-end planning performance!
 * **`21 Jan, 2023`:** MapTR is accepted to ICLR 2023 as **Spotlight Presentation**!
 * **`11 Nov, 2022`:** We release an initial version of MapTR.
 * **`31 Aug, 2022`:** We released our paper on Arxiv. Code/Models are coming soon. Please stay tuned! ☕️
