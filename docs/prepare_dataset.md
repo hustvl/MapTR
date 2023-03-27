@@ -42,4 +42,30 @@ MapTR
 ```
 
 ## Argoverse2
-work in progress, stay tuned :)
+Download the Argoverse2 Sensor Dataset [here](https://www.argoverse.org/av2.html#download-link).
+
+**Folder structure**
+```
+MapTR
+├── mmdetection3d/
+├── projects/
+├── tools/
+├── configs/
+├── ckpts/
+│   ├── r101_dcn_fcos3d_pretrain.pth
+├── data/
+│   ├── can_bus/
+│   ├── nuscenes/
+│   ├── argoverse2/
+│   │   ├── sensor/
+|   |   |   |—— train/
+|   |   |   |—— val/
+|   |   |   |—— test/
+```
+
+**Prepare Argoverse2 data**
+
+*We genetate custom annotation files which are different from mmdet3d's*
+```
+python tools/data_converter/av2_converter.py --data-root ./data/argoverse2/sensor/
+```
