@@ -73,6 +73,10 @@ https://user-images.githubusercontent.com/31960625/187059697-94622ddb-e76a-4fa7-
 ### *Night*
 https://user-images.githubusercontent.com/31960625/187059706-f7f5a7d8-1d1d-46e0-8be3-c770cf96d694.mp4
 
+### *End-to-end Planning*
+https://user-images.githubusercontent.com/26790424/229679664-0e9ba5e8-bf2c-45e0-abbc-36d840ee5cc9.mp4
+
+
 
 ## Getting Started
 - [Installation](docs/install.md)
