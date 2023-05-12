@@ -41,7 +41,7 @@ Qualitative results show that MapTR maintains stable and robust map construction
 
 
 | Method | Backbone | BEVEncoder |Lr Schd | mAP| FPS|memroy | 
-| :---: | :---: | :---: | :---: | :---: | :---:|:---:|
+| :---: | :---: | :---: | :---: | :---: | :---: | :---:|:---:|
 | MapTR-nano | R18 | GKT | 110ep | 44.2 | 25.1| 11907M (bs 24) |
 | MapTR-tiny | R50 | GKT |24ep | 50.3 | 11.2| 10287M (bs 4) | 
 | MapTR-tiny | R50 | GKT |110ep | 58.7|11.2| 10287M (bs 4)|
