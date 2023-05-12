@@ -1,4 +1,4 @@
-*.sh
+/*.sh
 change_submit.py
 cluster_submit.yaml
 
