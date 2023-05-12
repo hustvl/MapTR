@@ -62,6 +62,7 @@ class MapTRPerceptionTransformer(BaseModule):
         super(MapTRPerceptionTransformer, self).__init__(**kwargs)
         if modality == 'fusion':
             self.fuser = build_fuser(fuser) #TODO
+        self.use_attn_bev = encoder['type'] == 'BEVFormerEncoder'
         self.encoder = build_transformer_layer_sequence(encoder)
         self.decoder = build_transformer_layer_sequence(decoder)
         self.embed_dims = embed_dims
@@ -113,10 +114,9 @@ class MapTRPerceptionTransformer(BaseModule):
         xavier_init(self.can_bus_mlp, distribution='uniform', bias=0.)
     # TODO apply fp16 to this module cause grad_norm NAN
     # @auto_fp16(apply_to=('mlvl_feats', 'bev_queries', 'prev_bev', 'bev_pos'), out_fp32=True)
-    def get_bev_features(
+    def attn_bev_encode(
             self,
             mlvl_feats,
-            lidar_feat,
             bev_queries,
             bev_h,
             bev_w,
@@ -124,10 +124,6 @@ class MapTRPerceptionTransformer(BaseModule):
             bev_pos=None,
             prev_bev=None,
             **kwargs):
-        """
-        obtain bev features.
-        """
-
         bs = mlvl_feats[0].size(0)
         bev_queries = bev_queries.unsqueeze(1).repeat(1, bs, 1)
         bev_pos = bev_pos.flatten(2).permute(2, 0, 1)
@@ -209,6 +205,51 @@ class MapTRPerceptionTransformer(BaseModule):
             shift=shift,
             **kwargs
         )
+        return bev_embed
+
+    def lss_bev_encode(
+            self,
+            mlvl_feats,
+            prev_bev=None,
+            **kwargs):
+        assert len(mlvl_feats) == 1, 'Currently we only support single level feat in LSS'
+        images = mlvl_feats[0]
+        img_metas = kwargs['img_metas']
+        bev_embed = self.encoder(images,img_metas)
+        bs, c, _,_ = bev_embed.shape
+        bev_embed = bev_embed.view(bs,c,-1).permute(0,2,1).contiguous()
+        
+        return bev_embed
+
+    def get_bev_features(
+            self,
+            mlvl_feats,
+            lidar_feat,
+            bev_queries,
+            bev_h,
+            bev_w,
+            grid_length=[0.512, 0.512],
+            bev_pos=None,
+            prev_bev=None,
+            **kwargs):
+        """
+        obtain bev features.
+        """
+        if self.use_attn_bev:
+            bev_embed = self.attn_bev_encode(
+                mlvl_feats,
+                bev_queries,
+                bev_h,
+                bev_w,
+                grid_length=grid_length,
+                bev_pos=bev_pos,
+                prev_bev=prev_bev,
+                **kwargs)
+        else:
+            bev_embed = self.lss_bev_encode(
+                mlvl_feats,
+                prev_bev=prev_bev,
+                **kwargs)
         if lidar_feat is not None:
             bev_embed = bev_embed.view(bs, bev_h, bev_w, -1).permute(0,3,1,2).contiguous()
             lidar_feat = lidar_feat.permute(0,1,3,2).contiguous() # B C H W

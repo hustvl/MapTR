@@ -92,6 +92,7 @@ class MapTRHead(DETRHead):
 
         self.with_box_refine = with_box_refine
         self.as_two_stage = as_two_stage
+        self.bev_encoder_type = transformer.encoder.type
         if self.as_two_stage:
             transformer['as_two_stage'] = self.as_two_stage
         if 'code_size' in kwargs:
@@ -173,8 +174,11 @@ class MapTRHead(DETRHead):
                 [reg_branch for _ in range(num_pred)])
 
         if not self.as_two_stage:
-            self.bev_embedding = nn.Embedding(
-                self.bev_h * self.bev_w, self.embed_dims)
+            if self.bev_encoder_type == 'BEVFormerEncoder':
+                self.bev_embedding = nn.Embedding(
+                    self.bev_h * self.bev_w, self.embed_dims)
+            else:
+                self.bev_embedding = None
             if self.query_embed_type == 'all_pts':
                 self.query_embedding = nn.Embedding(self.num_query,
                                                     self.embed_dims * 2)
@@ -222,11 +226,16 @@ class MapTRHead(DETRHead):
             pts_embeds = self.pts_embedding.weight.unsqueeze(0)
             instance_embeds = self.instance_embedding.weight.unsqueeze(1)
             object_query_embeds = (pts_embeds + instance_embeds).flatten(0, 1).to(dtype)
-        bev_queries = self.bev_embedding.weight.to(dtype)
+        if self.bev_embedding is not None:
+            bev_queries = self.bev_embedding.weight.to(dtype)
 
-        bev_mask = torch.zeros((bs, self.bev_h, self.bev_w),
-                               device=bev_queries.device).to(dtype)
-        bev_pos = self.positional_encoding(bev_mask).to(dtype)
+            bev_mask = torch.zeros((bs, self.bev_h, self.bev_w),
+                                device=bev_queries.device).to(dtype)
+            bev_pos = self.positional_encoding(bev_mask).to(dtype)
+        else:
+            bev_queries = None
+            bev_mask = None
+            bev_pos = None
 
         if only_bev:  # only use encoder to obtain BEV features, TODO: refine the workaround
             return self.transformer.get_bev_features(
