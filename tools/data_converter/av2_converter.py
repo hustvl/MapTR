@@ -25,6 +25,8 @@ FAIL_LOGS = [
     '54bc6dbc-ebfb-3fba-b5b3-57f88b4b79ca',
     'af170aac-8465-3d7b-82c5-64147e94af7d',
     '6e106cf8-f6dd-38f6-89c8-9be7a71e7275',
+    '01bb304d-7bd8-35f8-bbef-7086b688e35e',
+    '453e5558-6363-38e3-bf9b-42b5ba0a6f1d'
 ]
 
 def parse_args():
