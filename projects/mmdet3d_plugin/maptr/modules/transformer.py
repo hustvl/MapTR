@@ -251,6 +251,7 @@ class MapTRPerceptionTransformer(BaseModule):
                 prev_bev=prev_bev,
                 **kwargs)
         if lidar_feat is not None:
+            bs = mlvl_feats[0].size(0)
             bev_embed = bev_embed.view(bs, bev_h, bev_w, -1).permute(0,3,1,2).contiguous()
             lidar_feat = lidar_feat.permute(0,1,3,2).contiguous() # B C H W
             lidar_feat = nn.functional.interpolate(lidar_feat, size=(bev_h,bev_w), mode='bicubic', align_corners=False)
