@@ -59,8 +59,8 @@ Qualitative results show that MapTR maintains stable and robust map construction
 | MapTR-tiny | R50 | GKT |24ep | 50.0 |18.4| 10287M (bs 4) | [config](projects/configs/maptr/maptr_tiny_r50_24e.py)|[model](https://drive.google.com/file/d/1n1FUFnRqdskvmpLdnsuX_VK6pET19h95/view?usp=share_link) / [log](https://drive.google.com/file/d/1nvPkk0EMHV8Q82E9usEKKYx7P38bCx1U/view?usp=share_link) |
 | MapTR-tiny | R50 |GKT | 110ep | 59.3 |18.4| 10287M (bs 4)|[config](projects/configs/maptr/maptr_tiny_r50_110e.py) |[model](https://drive.google.com/file/d/1SCF93LEEmXU0hMwPiUz9p2CWbL1FpB1h/view?usp=share_link) / [log](https://drive.google.com/file/d/1TQ4j_0Sf2ipzeYsEZZAHYzX4dCUaBqyp/view?usp=share_link) |
 | MapTR-tiny | Camera & LiDAR | GKT |24ep | 62.7 | 6.0 | 11858M (bs 4)|[config](projects/configs/maptr/maptr_tiny_fusion_24e.py) |[model](https://drive.google.com/file/d/1CFlJrl3ZDj3gIOysf5Cli9bX5LEYSYO4/view?usp=share_link) / [log](https://drive.google.com/file/d/1rb3S4oluxdZjNm2aJ5lBH23jrkYIaJbC/view?usp=share_link) |
-| MapTR-tiny | R50 | bevpool |24ep | TODO | 17.2 | TODO (bs 4)|[config](projects/configs/maptr/maptr_tiny_r50_24e_bevpool.py) |TODO / TODO |
-| MapTR-tiny | R50 | bevformer |24ep | TODO | 18.1 | TODO (bs 4)|[config](projects/configs/maptr/maptr_tiny_r50_24e_bevformer.py) |TODO / TODO |
+| MapTR-tiny | R50 | bevpool |24ep | 50.1 | 17.2 | 9817M (bs 4)|[config](projects/configs/maptr/maptr_tiny_r50_24e_bevpool.py) |[model](https://drive.google.com/file/d/16PK9XohV55_3qPVDtpXIl4_Iumw9EnfA/view?usp=sharing) / [log](https://drive.google.com/file/d/14nioV3_VV9KehmxK7XcAHxM8X6JH5WIr/view?usp=sharing) |
+| MapTR-tiny | R50 | bevformer |24ep | 48.7 | 18.1 | 10219M (bs 4)|[config](projects/configs/maptr/maptr_tiny_r50_24e_bevformer.py) |[model](https://drive.google.com/file/d/1y-UBwGBSb2xiV40AuQEBhB-xJyV7VusX/view?usp=sharing) / [log](https://drive.google.com/file/d/1r35bRhTGVtyZTP8drXBTOIhLYGCzjEaF/view?usp=sharing) |
 ## Qualitative results on nuScenes val set
 <div align="center"><h4>MapTR maintains stable and robust map construction quality in various driving scenes.</h4></div>
 
