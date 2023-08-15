@@ -42,7 +42,7 @@ Qualitative results show that MapTR maintains stable and robust map construction
 > Results from the [paper](https://arxiv.org/abs/2208.14437)
 
 
-| Method | Backbone | BEVEncoder |Lr Schd | mAP| FPS|memroy | 
+| Method | Backbone | BEVEncoder |Lr Schd | mAP| FPS|memory | 
 | :---: | :---: | :---: | :---: | :---: | :---:|:---:|
 | MapTR-nano | R18 | GKT | 110ep | 44.2 | 25.1| 11907M (bs 24) |
 | MapTR-tiny | R50 | GKT |24ep | 50.3 | 11.2| 10287M (bs 4) | 
@@ -55,7 +55,7 @@ Qualitative results show that MapTR maintains stable and robust map construction
 
 > Results from this repo. FPSs are much higher.
 
-| Method | Backbone | BEVEncoder |Lr Schd | mAP| FPS|memroy | Config | Download |
+| Method | Backbone | BEVEncoder |Lr Schd | mAP| FPS|memory | Config | Download |
 | :---: | :---: | :---: | :---: |  :---: | :---:|:---:| :---: | :---: |
 | MapTR-nano | R18 |GKT | 110ep |46.3  |48.2| 11907M (bs 24) |[config](projects/configs/maptr/maptr_nano_r18_110e.py) |[model](https://drive.google.com/file/d/1-wVO1pZhFif2igJoz-s451swQvPSto2m/view?usp=sharing) / [log](https://drive.google.com/file/d/1Hd25seDQKn8Vv6AQxPfSoiu-tY2i4Haa/view?usp=sharing) |
 | MapTR-tiny | R50 | GKT |24ep | 50.0 |18.4| 10287M (bs 4) | [config](projects/configs/maptr/maptr_tiny_r50_24e.py)|[model](https://drive.google.com/file/d/1n1FUFnRqdskvmpLdnsuX_VK6pET19h95/view?usp=share_link) / [log](https://drive.google.com/file/d/1nvPkk0EMHV8Q82E9usEKKYx7P38bCx1U/view?usp=share_link) |
