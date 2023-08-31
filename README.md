@@ -94,19 +94,30 @@ Please `git checkout maptrv2` and follow the install instruction to use followin
 
 - \* means that we introduce an extra semantic——centerline (using path-wise modeling proposed by [LaneGAP](https://github.com/hustvl/LaneGAP)).
 
-## Qualitative results on nuScenes val set
-MapTR/MapTRv2 maintains stable and robust map construction quality in various driving scenes.
+## Qualitative results on nuScenes val split and Argoverse2 val split
 
-### *Sunny&Cloudy*
+<div align="center"><h4> MapTR/MapTRv2 maintains stable and robust map construction quality in various driving scenes.</h4></div>
+
+![visualization](assets/MapTRv2_av2_visualizations.png "visualization")
+
+
+
+### *MapTRv2 on whole nuScenes val split*
+[**Youtube**](https://www.youtube.com/watch?v=s7McToPNlJ4)
+
+### *MapTRv2 on whole Argoverse2 val split*
+[**Youtube**](https://www.youtube.com/watch?v=nC8W_2BZuys)
+
+<!-- ### *Sunny&Cloudy*
 https://user-images.githubusercontent.com/31960625/187059686-11e4dd4b-46db-4411-b680-17ed6deebda2.mp4
 
 ### *Rainy*
 https://user-images.githubusercontent.com/31960625/187059697-94622ddb-e76a-4fa7-9c44-a688d2e439c0.mp4
 
 ### *Night*
-https://user-images.githubusercontent.com/31960625/187059706-f7f5a7d8-1d1d-46e0-8be3-c770cf96d694.mp4
+https://user-images.githubusercontent.com/31960625/187059706-f7f5a7d8-1d1d-46e0-8be3-c770cf96d694.mp4 -->
 
-### *End-to-end Planning*
+### *End-to-end Planning based on MapTR*
 https://user-images.githubusercontent.com/26790424/229679664-0e9ba5e8-bf2c-45e0-abbc-36d840ee5cc9.mp4
 
 
