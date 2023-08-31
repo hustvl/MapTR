@@ -4,3 +4,4 @@ from .map_loss import OrderedPtsL1Cost, PtsL1Cost
 from .map_loss import OrderedPtsL1Loss, PtsL1Loss
 from .map_loss import OrderedPtsSmoothL1Cost, OrderedPtsL1Loss
 from .map_loss import PtsDirCosLoss
+from .simple_loss import SimpleLoss

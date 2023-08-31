@@ -39,44 +39,28 @@ MapTR-tiny significantly outperforms the existing state-of-the-art multi-modalit
 Qualitative results show that MapTR maintains stable and robust map construction quality in complex and various driving scenes. MapTR is of great application value in autonomous driving. 
 
 ## Models
-> Results from the [paper](https://arxiv.org/abs/2208.14437)
+> Results from the [paper](https://arxiv.org/abs/2308.05736)
 
 
-| Method | Backbone | BEVEncoder |Lr Schd | mAP| FPS|memroy | 
-| :---: | :---: | :---: | :---: | :---: | :---:|:---:|
-| MapTR-nano | R18 | GKT | 110ep | 44.2 | 25.1| 11907M (bs 24) |
-| MapTR-tiny | R50 | GKT |24ep | 50.3 | 11.2| 10287M (bs 4) | 
-| MapTR-tiny | R50 | GKT |110ep | 58.7|11.2| 10287M (bs 4)|
+| Method | Backbone | Lr Schd | mAP| FPS|
+| :---: | :---: |  :---: | :---: | :---:|
+| MapTR | R18 | 110ep | 45.9 | 35.0| 
+| MapTR | R50 | 24ep | 50.3 | 15.1| 
+| MapTR | R50 | 110ep | 58.7|15.1| 
+| MapTRv2 | R18 |  110ep | 44.2 | 25.1| 
+| MapTRv2 | R50 | 24ep | 50.3 | 11.2| 
+| MapTRv2 | R50 | 110ep | 58.7|11.2| 
 
 **Notes**: 
 
 - FPS is measured on NVIDIA RTX3090 GPU with batch size of 1 (containing 6 view images).
 - All the experiments are performed on 8 NVIDIA GeForce RTX 3090 GPUs. 
 
-> Results from this repo. FPSs are much higher.
+> Results from this repo.
 
-| Method | Backbone | BEVEncoder |Lr Schd | mAP| FPS|memroy | Config | Download |
-| :---: | :---: | :---: | :---: |  :---: | :---:|:---:| :---: | :---: |
-| MapTR-nano | R18 |GKT | 110ep |46.3  |48.2| 11907M (bs 24) |[config](projects/configs/maptr/maptr_nano_r18_110e.py) |[model](https://drive.google.com/file/d/1-wVO1pZhFif2igJoz-s451swQvPSto2m/view?usp=sharing) / [log](https://drive.google.com/file/d/1Hd25seDQKn8Vv6AQxPfSoiu-tY2i4Haa/view?usp=sharing) |
-| MapTR-tiny | R50 | GKT |24ep | 50.0 |18.4| 10287M (bs 4) | [config](projects/configs/maptr/maptr_tiny_r50_24e.py)|[model](https://drive.google.com/file/d/1n1FUFnRqdskvmpLdnsuX_VK6pET19h95/view?usp=share_link) / [log](https://drive.google.com/file/d/1nvPkk0EMHV8Q82E9usEKKYx7P38bCx1U/view?usp=share_link) |
-| MapTR-tiny | R50 |GKT | 110ep | 59.3 |18.4| 10287M (bs 4)|[config](projects/configs/maptr/maptr_tiny_r50_110e.py) |[model](https://drive.google.com/file/d/1SCF93LEEmXU0hMwPiUz9p2CWbL1FpB1h/view?usp=share_link) / [log](https://drive.google.com/file/d/1TQ4j_0Sf2ipzeYsEZZAHYzX4dCUaBqyp/view?usp=share_link) |
-| MapTR-tiny | Camera & LiDAR | GKT |24ep | 62.7 | 6.0 | 11858M (bs 4)|[config](projects/configs/maptr/maptr_tiny_fusion_24e.py) |[model](https://drive.google.com/file/d/1CFlJrl3ZDj3gIOysf5Cli9bX5LEYSYO4/view?usp=share_link) / [log](https://drive.google.com/file/d/1rb3S4oluxdZjNm2aJ5lBH23jrkYIaJbC/view?usp=share_link) |
-| MapTR-tiny | R50 | bevpool |24ep | 50.1 | 17.2 | 9817M (bs 4)|[config](projects/configs/maptr/maptr_tiny_r50_24e_bevpool.py) |[model](https://drive.google.com/file/d/16PK9XohV55_3qPVDtpXIl4_Iumw9EnfA/view?usp=sharing) / [log](https://drive.google.com/file/d/14nioV3_VV9KehmxK7XcAHxM8X6JH5WIr/view?usp=sharing) |
-| MapTR-tiny | R50 | bevformer |24ep | 48.7 | 18.1 | 10219M (bs 4)|[config](projects/configs/maptr/maptr_tiny_r50_24e_bevformer.py) |[model](https://drive.google.com/file/d/1y-UBwGBSb2xiV40AuQEBhB-xJyV7VusX/view?usp=sharing) / [log](https://drive.google.com/file/d/1r35bRhTGVtyZTP8drXBTOIhLYGCzjEaF/view?usp=sharing) |
-## Qualitative results on nuScenes val set
+## Qualitative results on nuScenes val set and Argoverse2 val set
 <div align="center"><h4>MapTR maintains stable and robust map construction quality in various driving scenes.</h4></div>
 
-![visualizations](assets/visualizations.png "visualizations")
-
-
-### *Sunny&Cloudy*
-https://user-images.githubusercontent.com/31960625/187059686-11e4dd4b-46db-4411-b680-17ed6deebda2.mp4
-
-### *Rainy*
-https://user-images.githubusercontent.com/31960625/187059697-94622ddb-e76a-4fa7-9c44-a688d2e439c0.mp4
-
-### *Night*
-https://user-images.githubusercontent.com/31960625/187059706-f7f5a7d8-1d1d-46e0-8be3-c770cf96d694.mp4
 
 ### *End-to-end Planning*
 https://user-images.githubusercontent.com/26790424/229679664-0e9ba5e8-bf2c-45e0-abbc-36d840ee5cc9.mp4

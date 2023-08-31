@@ -3,7 +3,7 @@ from numpy import random
 import mmcv
 from mmdet.datasets.builder import PIPELINES
 from mmcv.parallel import DataContainer as DC
-
+import torch
 @PIPELINES.register_module()
 class PadMultiViewImage(object):
     """Pad the multi-view image.
@@ -35,6 +35,64 @@ class PadMultiViewImage(object):
         
         results['ori_shape'] = [img.shape for img in results['img']]
         results['img'] = padded_img
+        results['img_shape'] = [img.shape for img in padded_img]
+        results['pad_shape'] = [img.shape for img in padded_img]
+        results['pad_fixed_size'] = self.size
+        results['pad_size_divisor'] = self.size_divisor
+
+    def __call__(self, results):
+        """Call function to pad images, masks, semantic segmentation maps.
+        Args:
+            results (dict): Result dict from loading pipeline.
+        Returns:
+            dict: Updated result dict.
+        """
+        self._pad_img(results)
+        return results
+
+    def __repr__(self):
+        repr_str = self.__class__.__name__
+        repr_str += f'(size={self.size}, '
+        repr_str += f'size_divisor={self.size_divisor}, '
+        repr_str += f'pad_val={self.pad_val})'
+        return repr_str
+
+@PIPELINES.register_module()
+class PadMultiViewImageDepth(object):
+    """Pad the multi-view image.
+    There are two padding modes: (1) pad to a fixed size and (2) pad to the
+    minimum size that is divisible by some number.
+    Added keys are "pad_shape", "pad_fixed_size", "pad_size_divisor",
+    Args:
+        size (tuple, optional): Fixed padding size.
+        size_divisor (int, optional): The divisor of padded size.
+        pad_val (float, optional): Padding value, 0 by default.
+    """
+
+    def __init__(self, size=None, size_divisor=None, pad_val=0):
+        self.size = size
+        self.size_divisor = size_divisor
+        self.pad_val = pad_val
+        # only one of size and size_divisor should be valid
+        assert size is not None or size_divisor is not None
+        assert size is None or size_divisor is None
+
+    def _pad_img(self, results):
+        """Pad images according to ``self.size``."""
+        if self.size is not None:
+            padded_img = [mmcv.impad(
+                img, shape=self.size, pad_val=self.pad_val) for img in results['img']]
+            padded_gt_depth = [mmcv.impad(
+                img, shape=self.size, pad_val=self.pad_val) for img in results['gt_depth']]
+        elif self.size_divisor is not None:
+            padded_img = [mmcv.impad_to_multiple(
+                img, self.size_divisor, pad_val=self.pad_val) for img in results['img']]
+            padded_gt_depth = [mmcv.impad_to_multiple(
+                img.numpy(), self.size_divisor, pad_val=self.pad_val) for img in results['gt_depth']]
+
+        results['ori_shape'] = [img.shape for img in results['img']]
+        results['img'] = padded_img
+        results['gt_depth'] = np.stack(padded_gt_depth)
         results['img_shape'] = [img.shape for img in padded_img]
         results['pad_shape'] = [img.shape for img in padded_img]
         results['pad_fixed_size'] = self.size
@@ -249,9 +307,10 @@ class CustomCollect3D(object):
                             'pcd_vertical_flip', 'box_mode_3d', 'box_type_3d',
                             'img_norm_cfg', 'pcd_trans', 'sample_idx', 'prev_idx', 'next_idx',
                             'pcd_scale_factor', 'pcd_rotation', 'pts_filename',
-                            'transformation_3d_flow', 'scene_token',
-                            'can_bus','lidar2global',
-                            'camera2ego','camera_intrinsics','img_aug_matrix','lidar2ego'
+                            'transformation_3d_flow', 'scene_token','camera_intrinsics',
+                            'can_bus','lidar2global','cam2lidar','lidar2cam',
+                            'camera2ego','cam_intrinsic','img_aug_matrix','lidar2ego', 'lidar_aug_matrix',
+                            'timestamp','img_inputs', 'gt_bboxes_3d', 'gt_labels_3d','gt_depth'
                             )):
         self.keys = keys
         self.meta_keys = meta_keys
@@ -269,7 +328,7 @@ class CustomCollect3D(object):
        
         data = {}
         img_metas = {}
-      
+        # import pdb;pdb.set_trace()
         for key in self.meta_keys:
             if key in results:
                 img_metas[key] = results[key]
@@ -283,7 +342,6 @@ class CustomCollect3D(object):
         """str: Return a string that describes the module."""
         return self.__class__.__name__ + \
             f'(keys={self.keys}, meta_keys={self.meta_keys})'
-
 
 
 @PIPELINES.register_module()
