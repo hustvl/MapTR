@@ -85,6 +85,11 @@ Please `git checkout maptrv2` and follow the install instruction to use followin
 
 <div align="center"><h4> Argoverse2 dataset</h4></div>
 
+| Method | Backbone | BEVEncoder |Lr Schd | mAP| FPS|memory | Config | Download |
+| :---: | :---: | :---: | :---: |  :---: | :---:|:---:| :---: | :---: |
+| MapTRv2| R50 |bevpool | 24ep | WIP |14.1| WIP (bs 24) |[config](https://github.com/hustvl/MapTR/blob/maptrv2/projects/configs/maptrv2/maptrv2_av2_3d_r50_6ep.py) |model / log |
+| MapTRv2*| R50 |bevpool | 24ep | WIP |WIP| WIP (bs 24) |[config](https://github.com/hustvl/MapTR/blob/maptrv2/projects/configs/maptrv2/maptrv2_av2_3d_r50_6ep_w_centerline.py) |model / log |
+
 **Notes**: 
 
 - \* means that we introduce an extra semantic——centerline (using path-wise modeling proposed by [LaneGAP](https://github.com/hustvl/LaneGAP)).
