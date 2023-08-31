@@ -60,6 +60,9 @@ High-definition (HD) map provides abundant and precise static environmental info
 > Results from this repo. 
 
 ### MapTR
+
+<div align="center"><h4> nuScenes dataset</h4></div>
+
 | Method | Backbone | BEVEncoder |Lr Schd | mAP| FPS|memory | Config | Download |
 | :---: | :---: | :---: | :---: |  :---: | :---:|:---:| :---: | :---: |
 | MapTR-nano | R18 |GKT | 110ep |46.3  |35.0| 11907M (bs 24) |[config](projects/configs/maptr/maptr_nano_r18_110e.py) |[model](https://drive.google.com/file/d/1-wVO1pZhFif2igJoz-s451swQvPSto2m/view?usp=sharing) / [log](https://drive.google.com/file/d/1Hd25seDQKn8Vv6AQxPfSoiu-tY2i4Haa/view?usp=sharing) |
@@ -71,10 +74,16 @@ High-definition (HD) map provides abundant and precise static environmental info
 
 ### MapTRv2
 Please `git checkout maptrv2` and follow the install instruction to use following checkpoint
+
+<div align="center"><h4> nuScenes dataset</h4></div>
+
 | Method | Backbone | BEVEncoder |Lr Schd | mAP| FPS|memory | Config | Download |
 | :---: | :---: | :---: | :---: |  :---: | :---:|:---:| :---: | :---: |
 | MapTRv2| R50 |bevpool | 24ep | WIP |14.1| WIP (bs 24) |[config](https://github.com/hustvl/MapTR/blob/maptrv2/projects/configs/maptrv2/maptrv2_nusc_r50_24ep.py) |model / log |
 | MapTRv2*| R50 |bevpool | 24ep | WIP |WIP| WIP (bs 24) |[config](https://github.com/hustvl/MapTR/blob/maptrv2/projects/configs/maptrv2/maptrv2_nusc_r50_24ep_w_centerline.py) |model / log |
+
+
+<div align="center"><h4> Argoverse2 dataset</h4></div>
 
 **Notes**: 
 
