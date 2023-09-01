@@ -9,7 +9,7 @@ from projects.mmdet3d_plugin.models.utils.grid_mask import GridMask
 from mmcv.runner import force_fp32, auto_fp16
 from mmdet3d.ops import Voxelization, DynamicScatter
 from mmdet3d.models import builder
-
+from mmcv.utils import TORCH_VERSION, digit_version
 @DETECTORS.register_module()
 class MapTRv2(MVXTwoStageDetector):
     """MapTR.
