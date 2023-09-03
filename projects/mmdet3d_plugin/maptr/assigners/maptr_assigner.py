@@ -10,6 +10,28 @@ try:
 except ImportError:
     linear_sum_assignment = None
 
+def denormalize_3d_pts(pts, pc_range):
+    new_pts = pts.clone()
+    new_pts[...,0:1] = (pts[..., 0:1]*(pc_range[3] -
+                            pc_range[0]) + pc_range[0])
+    new_pts[...,1:2] = (pts[...,1:2]*(pc_range[4] -
+                            pc_range[1]) + pc_range[1])
+    new_pts[...,2:3] = (pts[...,2:3]*(pc_range[5] -
+                            pc_range[2]) + pc_range[2])
+    return new_pts
+
+def normalize_3d_pts(pts, pc_range):
+    patch_h = pc_range[4]-pc_range[1]
+    patch_w = pc_range[3]-pc_range[0]
+    patch_z = pc_range[5]-pc_range[2]
+    new_pts = pts.clone()
+    new_pts[...,0:1] = pts[..., 0:1] - pc_range[0]
+    new_pts[...,1:2] = pts[...,1:2] - pc_range[1]
+    new_pts[...,2:3] = pts[...,2:3] - pc_range[2]
+    factor = pts.new_tensor([patch_w, patch_h,patch_z])
+    normalized_pts = new_pts / factor
+    return normalized_pts
+
 def normalize_2d_bbox(bboxes, pc_range):
 
     patch_h = pc_range[4]-pc_range[1]
@@ -76,11 +98,16 @@ class MapTRAssigner(BaseAssigner):
     """
 
     def __init__(self,
+                 z_cfg = dict(
+                    pred_z_flag=False,
+                    gt_z_flag=False,
+                 ),
                  cls_cost=dict(type='ClassificationCost', weight=1.),
                  reg_cost=dict(type='BBoxL1Cost', weight=1.0),
                  iou_cost=dict(type='IoUCost', weight=0.0),
                  pts_cost=dict(type='ChamferDistance',loss_src_weight=1.0,loss_dst_weight=1.0),
                  pc_range=None):
+        self.z_cfg = z_cfg
         self.cls_cost = build_match_cost(cls_cost)
         self.reg_cost = build_match_cost(reg_cost)
         self.iou_cost = build_match_cost(iou_cost)
@@ -156,7 +183,8 @@ class MapTRAssigner(BaseAssigner):
         reg_cost = self.reg_cost(bbox_pred[:, :4], normalized_gt_bboxes[:, :4])
 
         _, num_orders, num_pts_per_gtline, num_coords = gt_pts.shape
-        normalized_gt_pts = normalize_2d_pts(gt_pts, self.pc_range)
+        normalized_gt_pts = normalize_2d_pts(gt_pts, self.pc_range) if not self.z_cfg['gt_z_flag'] \
+                        else normalize_3d_pts(gt_pts, self.pc_range)
         num_pts_per_predline = pts_pred.size(1)
         if num_pts_per_predline != num_pts_per_gtline:
             pts_pred_interpolated = F.interpolate(pts_pred.permute(0,2,1),size=(num_pts_per_gtline),

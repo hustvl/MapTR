@@ -66,7 +66,7 @@ aux_seg_cfg = dict(
 )
 
 model = dict(
-    type='V1HyMatchingMapTR',
+    type='MapTRv2',
     use_grid_mask=True,
     video_test_mode=False,
     pretrained=dict(img='ckpts/resnet50-19c8e357.pth'),
@@ -88,7 +88,7 @@ model = dict(
         num_outs=_num_levels_,
         relu_before_extra_convs=True),
     pts_bbox_head=dict(
-        type='V1HyMatchingMapTRHead',
+        type='MapTRv2Head',
         bev_h=bev_h_,
         bev_w=bev_w_,
         num_query=900,

@@ -224,13 +224,7 @@ train_pipeline = [
     dict(type='RandomScaleImageMultiViewImage', scales=[0.3]),
     dict(type='PhotoMetricDistortionMultiViewImage'),
     dict(type='NormalizeMultiviewImage', **img_norm_cfg),
-    dict(
-        type='AV2CustomLoadPointsFromFile',
-        coord_type='LIDAR',
-        load_dim=5,
-        use_dim=5),
-    dict(type='AV2CustomPointToMultiViewDepth', downsample=1, grid_config=grid_config),
-    dict(type='PadMultiViewImageDepth', size_divisor=32), 
+    dict(type='PadMultiViewImage', size_divisor=32),
     dict(type='DefaultFormatBundle3D', with_gt=False, with_label=False,class_names=map_classes),
     dict(type='CustomCollect3D', keys=['img'])
 ]
