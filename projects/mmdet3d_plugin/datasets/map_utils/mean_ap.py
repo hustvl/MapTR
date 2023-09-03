@@ -63,7 +63,8 @@ def get_cls_results(gen_results,
                     num_pred_pts_per_instance=30,
                     eval_use_same_gt_sample_num_flag=False,
                     class_id=0, 
-                    fix_interval=False):
+                    fix_interval=False,
+                    code_size=2):
     """Get det results and gt information of a certain class.
 
     Args:
@@ -91,11 +92,15 @@ def get_cls_results(gen_results,
                     distances = list(np.arange(1., line.length, 1.))
                     distances = [0,] + distances + [line.length,]
                     sampled_points = np.array([list(line.interpolate(distance).coords)
-                                            for distance in distances]).reshape(-1, 2)
+                                            for distance in distances]).reshape(-1, code_size)
                 else:
-                    distances = np.linspace(0, line.length, num_sample)
-                    sampled_points = np.array([list(line.interpolate(distance).coords)
-                                                for distance in distances]).reshape(-1, 2)
+                    line_pts = np.array(line.coords)
+                    if line_pts.shape[0] == num_sample:
+                        sampled_points = line_pts
+                    else:
+                        distances = np.linspace(0, line.length, num_sample)
+                        sampled_points = np.array([list(line.interpolate(distance).coords)
+                                                    for distance in distances]).reshape(-1, code_size)
                 
             cls_gens.append(sampled_points)
             cls_scores.append(res['confidence_level'])
@@ -107,9 +112,9 @@ def get_cls_results(gen_results,
         # print(f'for class {i}, cls_gens has shape {cls_gens.shape}')
     else:
         if not eval_use_same_gt_sample_num_flag:
-            cls_gens = np.zeros((0,num_pred_pts_per_instance*2+1))
+            cls_gens = np.zeros((0,num_pred_pts_per_instance*code_size+1))
         else:
-            cls_gens = np.zeros((0,num_sample*2+1))
+            cls_gens = np.zeros((0,num_sample*code_size+1))
         # print(f'for class {i}, cls_gens has shape {cls_gens.shape}')
 
     cls_gts = []
@@ -121,14 +126,14 @@ def get_cls_results(gen_results,
             line = LineString(line)
             distances = np.linspace(0, line.length, num_sample)
             sampled_points = np.array([list(line.interpolate(distance).coords)
-                                        for distance in distances]).reshape(-1, 2)
+                                        for distance in distances]).reshape(-1, code_size)
             
             cls_gts.append(sampled_points)
     num_gts = len(cls_gts)
     if num_gts > 0:
         cls_gts = np.stack(cls_gts).reshape(num_gts,-1)
     else:
-        cls_gts = np.zeros((0,num_sample*2))
+        cls_gts = np.zeros((0,num_sample*code_size))
     return cls_gens, cls_gts
     # ones = np.ones((num_gts,1))
     # tmp_cls_gens = np.concatenate([cls_gts,ones],axis=-1)
@@ -141,6 +146,7 @@ def format_res_gt_by_classes(result_path,
                              num_pred_pts_per_instance=30,
                              eval_use_same_gt_sample_num_flag=False,
                              pc_range=[-15.0, -30.0, -5.0, 15.0, 30.0, 3.0],
+                             code_size=2,
                              nproc=24):
     assert cls_names is not None
     timer = mmcv.Timer()
@@ -201,7 +207,8 @@ def format_res_gt_by_classes(result_path,
         gengts = pool.starmap(
                     partial(get_cls_results, num_sample=num_fixed_sample_pts,
                         num_pred_pts_per_instance=num_pred_pts_per_instance,
-                        eval_use_same_gt_sample_num_flag=eval_use_same_gt_sample_num_flag,class_id=i,fix_interval=fix_interval),
+                        eval_use_same_gt_sample_num_flag=eval_use_same_gt_sample_num_flag,class_id=i,fix_interval=fix_interval,
+                        code_size=code_size),
                     zip(gen_results, annotations))   
         # gengts = map(partial(get_cls_results, num_sample=num_fixed_sample_pts, class_id=i,fix_interval=fix_interval),
         #             zip(gen_results, annotations))
@@ -226,6 +233,7 @@ def eval_map(gen_results,
              pc_range=[-15.0, -30.0, -5.0, 15.0, 30.0, 3.0],
              metric=None,
              num_pred_pts_per_instance=30,
+             code_size=2,
              nproc=24):
     timer = mmcv.Timer()
     pool = Pool(nproc)
@@ -250,7 +258,7 @@ def eval_map(gen_results,
         # tpfp = tpfp_fn(cls_gen[i], cls_gt[i],threshold=threshold, metric=metric)
         # import pdb; pdb.set_trace()
         # TODO this is a hack
-        tpfp_fn = partial(tpfp_fn, threshold=threshold, metric=metric)
+        tpfp_fn = partial(tpfp_fn, threshold=threshold, metric=metric, code_size=code_size)
         args = []
         # compute tp and fp for each image with multiple processes
         tpfp = pool.starmap(

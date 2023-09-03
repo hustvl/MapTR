@@ -6,6 +6,28 @@ from projects.mmdet3d_plugin.core.bbox.util import denormalize_bbox
 import numpy as np
 from mmdet.core.bbox.transforms import bbox_xyxy_to_cxcywh, bbox_cxcywh_to_xyxy
 
+def denormalize_3d_pts(pts, pc_range):
+    new_pts = pts.clone()
+    new_pts[...,0:1] = (pts[..., 0:1]*(pc_range[3] -
+                            pc_range[0]) + pc_range[0])
+    new_pts[...,1:2] = (pts[...,1:2]*(pc_range[4] -
+                            pc_range[1]) + pc_range[1])
+    new_pts[...,2:3] = (pts[...,2:3]*(pc_range[5] -
+                            pc_range[2]) + pc_range[2])
+    return new_pts
+
+def normalize_3d_pts(pts, pc_range):
+    patch_h = pc_range[4]-pc_range[1]
+    patch_w = pc_range[3]-pc_range[0]
+    patch_z = pc_range[5]-pc_range[2]
+    new_pts = pts.clone()
+    new_pts[...,0:1] = pts[..., 0:1] - pc_range[0]
+    new_pts[...,1:2] = pts[...,1:2] - pc_range[1]
+    new_pts[...,2:3] = pts[...,2:3] - pc_range[2]
+    factor = pts.new_tensor([patch_w, patch_h,patch_z])
+    normalized_pts = new_pts / factor
+    return normalized_pts
+
 
 def normalize_2d_bbox(bboxes, pc_range):
 
@@ -176,6 +198,10 @@ class MapTRNMSFreeCoder(BaseBBoxCoder):
 
     def __init__(self,
                  pc_range,
+                 z_cfg = dict(
+                    pred_z_flag=False,
+                    gt_z_flag=False,
+                 ),
                  voxel_size=None,
                  post_center_range=None,
                  max_num=100,
@@ -187,6 +213,8 @@ class MapTRNMSFreeCoder(BaseBBoxCoder):
         self.max_num = max_num
         self.score_threshold = score_threshold
         self.num_classes = num_classes
+
+        self.z_cfg = z_cfg
 
     def encode(self):
 
@@ -216,7 +244,9 @@ class MapTRNMSFreeCoder(BaseBBoxCoder):
         pts_preds = pts_preds[bbox_index]
        
         final_box_preds = denormalize_2d_bbox(bbox_preds, self.pc_range) 
-        final_pts_preds = denormalize_2d_pts(pts_preds, self.pc_range) #num_q,num_p,2
+        #num_q,num_p,2
+        final_pts_preds = denormalize_2d_pts(pts_preds, self.pc_range) if not self.z_cfg['gt_z_flag'] \
+                        else denormalize_3d_pts(pts_preds, self.pc_range) 
         # final_box_preds = bbox_preds 
         final_scores = scores 
         final_preds = labels 

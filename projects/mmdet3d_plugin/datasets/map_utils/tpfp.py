@@ -9,7 +9,8 @@ from shapely.geometry import LineString, Polygon
 def custom_tpfp_gen(gen_lines,
              gt_lines,
              threshold=0.5,
-             metric='chamfer'):
+             metric='chamfer',
+             code_size=2):
     """Check if detected bboxes are true positive or false positive.
 
     Args:
@@ -55,8 +56,8 @@ def custom_tpfp_gen(gen_lines,
     # distance matrix: n x m
 
     matrix = custom_polyline_score(
-            gen_lines[:,:-1].reshape(num_gens,-1,2), 
-            gt_lines.reshape(num_gts,-1,2),linewidth=2.,metric=metric)
+            gen_lines[:,:-1].reshape(num_gens,-1,code_size), 
+            gt_lines.reshape(num_gts,-1,code_size),linewidth=2.,metric=metric)
     # for each det, the max iou with all gts
     matrix_max = matrix.max(axis=1)
     # for each det, which gt overlaps most with it
@@ -79,4 +80,3 @@ def custom_tpfp_gen(gen_lines,
             fp[i] = 1
 
     return tp, fp
-
