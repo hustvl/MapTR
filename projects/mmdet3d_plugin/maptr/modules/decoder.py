@@ -62,11 +62,10 @@ class MapTRDecoder(TransformerLayerSequence):
             if reg_branches is not None:
                 tmp = reg_branches[lid](output)
 
-                assert reference_points.shape[-1] == 2
+                # assert reference_points.shape[-1] == 2
 
                 new_reference_points = torch.zeros_like(reference_points)
-                new_reference_points[..., :2] = tmp[
-                    ..., :2] + inverse_sigmoid(reference_points[..., :2])
+                new_reference_points = tmp + inverse_sigmoid(reference_points)
                 # new_reference_points[..., 2:3] = tmp[
                 #     ..., 4:5] + inverse_sigmoid(reference_points[..., 2:3])
 
