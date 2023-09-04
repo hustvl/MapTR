@@ -80,7 +80,7 @@ Please `git checkout maptrv2` and follow the install instruction to use followin
 | Method | Backbone | BEVEncoder |Lr Schd | mAP| FPS|memory | Config | Download |
 | :---: | :---: | :---: | :---: |  :---: | :---:|:---:| :---: | :---: |
 | MapTRv2| R50 |bevpool | 24ep | 61.4 |14.1| 19426M (bs 24) |[config](https://github.com/hustvl/MapTR/blob/maptrv2/projects/configs/maptrv2/maptrv2_nusc_r50_24ep.py) |[model](https://drive.google.com/file/d/1AmQ3fT-J-MM4B8kh_9Gm2G5guM92Agww/view?usp=sharing) / [log](https://drive.google.com/file/d/1rrAXza6FTYUs8kfr5126qWU6-FNGGMwD/view?usp=sharing) |
-| MapTRv2*| R50 |bevpool | 24ep | WIP |WIP| WIP (bs 24) |[config](https://github.com/hustvl/MapTR/blob/maptrv2/projects/configs/maptrv2/maptrv2_nusc_r50_24ep_w_centerline.py) |model / log |
+| MapTRv2*| R50 |bevpool | 24ep | 54.3 |WIP| 20363M (bs 24) |[config](https://github.com/hustvl/MapTR/blob/maptrv2/projects/configs/maptrv2/maptrv2_nusc_r50_24ep_w_centerline.py) |[model](https://drive.google.com/file/d/1m02OKAKPhzMOaSu_4STVcepY8jbE7v3o/view?usp=sharing) / [log](https://drive.google.com/file/d/1cEV7sfiWS0-9Uu1eQEt2xm77l4mAuHMM/view?usp=sharing) |
 
 
 <div align="center"><h4> Argoverse2 dataset</h4></div>
