@@ -12,6 +12,28 @@ from mmdet.core.bbox.transforms import bbox_xyxy_to_cxcywh, bbox_cxcywh_to_xyxy
 from mmdet.core import (multi_apply, multi_apply, reduce_mean)
 from mmcv.utils import TORCH_VERSION, digit_version
 
+def denormalize_3d_pts(pts, pc_range):
+    new_pts = pts.clone()
+    new_pts[...,0:1] = (pts[..., 0:1]*(pc_range[3] -
+                            pc_range[0]) + pc_range[0])
+    new_pts[...,1:2] = (pts[...,1:2]*(pc_range[4] -
+                            pc_range[1]) + pc_range[1])
+    new_pts[...,2:3] = (pts[...,2:3]*(pc_range[5] -
+                            pc_range[2]) + pc_range[2])
+    return new_pts
+
+def normalize_3d_pts(pts, pc_range):
+    patch_h = pc_range[4]-pc_range[1]
+    patch_w = pc_range[3]-pc_range[0]
+    patch_z = pc_range[5]-pc_range[2]
+    new_pts = pts.clone()
+    new_pts[...,0:1] = pts[..., 0:1] - pc_range[0]
+    new_pts[...,1:2] = pts[...,1:2] - pc_range[1]
+    new_pts[...,2:3] = pts[...,2:3] - pc_range[2]
+    factor = pts.new_tensor([patch_w, patch_h,patch_z])
+    normalized_pts = new_pts / factor
+    return normalized_pts
+
 def normalize_2d_bbox(bboxes, pc_range):
 
     patch_h = pc_range[4]-pc_range[1]
