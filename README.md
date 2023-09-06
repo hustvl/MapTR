@@ -130,8 +130,8 @@ https://user-images.githubusercontent.com/26790424/229679664-0e9ba5e8-bf2c-45e0-
 
 
 ## Catalog
-
-- [ ] centerline detection & topology support
+- [ ] temporal modules
+- [x] centerline detection & topology support (refer to ***maptrv2*** branch)
 - [x] multi-modal checkpoints
 - [x] multi-modal code
 - [ ] lidar modality code
