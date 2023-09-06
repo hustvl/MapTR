@@ -156,18 +156,18 @@ If you find MapTR is useful in your research or applications, please consider gi
 }
 ```
 ```bibtex
-@inproceedings{MapTRv2,
+@article{MapTRv2,
   title={MapTRv2: An End-to-End Framework for Online Vectorized HD Map Construction},
   author={Liao, Bencheng and Chen, Shaoyu and Zhang, Yunchi and Jiang, Bo and Zhang, Qian and Liu, Wenyu and Huang, Chang and Wang, Xinggang},
-  booktitle={arXiv preprint arXiv: 2308.05736},
+  journal={arXiv preprint arXiv: 2308.05736},
   year={2023}
 }
 ```
 ```bibtex
- @inproceedings{lanegap,
+ @article{lanegap,
   title={Lane Graph as Path: Continuity-preserving Path-wise Modeling for Online Lane Graph Construction},
   author={Bencheng Liao and Shaoyu Chen and Bo Jiang and Tianheng Cheng and Qian Zhang and Wenyu Liu and Chang Huang and Xinggang Wang},
-  booktitle={arXiv preprint arXiv:2303.08815},
+  journal={arXiv preprint arXiv:2303.08815},
   year={2023}
 }
 ```
