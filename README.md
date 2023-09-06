@@ -156,10 +156,10 @@ If you find MapTR is useful in your research or applications, please consider gi
 }
 ```
 ```bibtex
-@article{MapTRv2,
+@article{maptrv2,
   title={MapTRv2: An End-to-End Framework for Online Vectorized HD Map Construction},
   author={Liao, Bencheng and Chen, Shaoyu and Zhang, Yunchi and Jiang, Bo and Zhang, Qian and Liu, Wenyu and Huang, Chang and Wang, Xinggang},
-  journal={arXiv preprint arXiv: 2308.05736},
+  journal={arXiv preprint arXiv:2308.05736},
   year={2023}
 }
 ```
