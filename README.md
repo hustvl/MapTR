@@ -163,3 +163,11 @@ If you find MapTR is useful in your research or applications, please consider gi
   year={2023}
 }
 ```
+```bibtex
+ @inproceedings{lanegap,
+  title={Lane Graph as Path: Continuity-preserving Path-wise Modeling for Online Lane Graph Construction},
+  author={Bencheng Liao and Shaoyu Chen and Bo Jiang and Tianheng Cheng and Qian Zhang and Wenyu Liu and Chang Huang and Xinggang Wang},
+  booktitle={arXiv preprint arXiv:2303.08815},
+  year={2023}
+}
+```
