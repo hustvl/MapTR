@@ -71,6 +71,7 @@ High-definition (HD) map provides abundant and precise static environmental info
 | MapTR-tiny | Camera & LiDAR | GKT |24ep | 62.7 | 6.0 | 11858M (bs 4)|[config](projects/configs/maptr/maptr_tiny_fusion_24e.py) |[model](https://drive.google.com/file/d/1CFlJrl3ZDj3gIOysf5Cli9bX5LEYSYO4/view?usp=share_link) / [log](https://drive.google.com/file/d/1rb3S4oluxdZjNm2aJ5lBH23jrkYIaJbC/view?usp=share_link) |
 | MapTR-tiny | R50 | bevpool |24ep | 50.1 | 14.7 | 9817M (bs 4)|[config](projects/configs/maptr/maptr_tiny_r50_24e_bevpool.py) |[model](https://drive.google.com/file/d/16PK9XohV55_3qPVDtpXIl4_Iumw9EnfA/view?usp=sharing) / [log](https://drive.google.com/file/d/14nioV3_VV9KehmxK7XcAHxM8X6JH5WIr/view?usp=sharing) |
 | MapTR-tiny | R50 | bevformer |24ep | 48.7 | 15.0 | 10219M (bs 4)|[config](projects/configs/maptr/maptr_tiny_r50_24e_bevformer.py) |[model](https://drive.google.com/file/d/1y-UBwGBSb2xiV40AuQEBhB-xJyV7VusX/view?usp=sharing) / [log](https://drive.google.com/file/d/1r35bRhTGVtyZTP8drXBTOIhLYGCzjEaF/view?usp=sharing) |
+| MapTR-tiny<sup>+</sup> | R50 | bevformer |24ep | 53.3 | 15.0 | 15087M (bs 4)|[config](projects/configs/maptr/maptr_tiny_r50_24e_t4.py) |[model](https://drive.google.com/file/d/1sbXTawEbpV61TwVULCMRRDTLYzZ6SL7U/view?usp=sharing) / [log](https://drive.google.com/file/d/1YGI_X6Cb2zV13CHMsDvEs8RJRMzeiUzM/view?usp=sharing) |
 
 ### MapTRv2
 Please `git checkout maptrv2` and follow the install instruction to use following checkpoint
@@ -130,7 +131,7 @@ https://user-images.githubusercontent.com/26790424/229679664-0e9ba5e8-bf2c-45e0-
 
 
 ## Catalog
-- [ ] temporal modules
+- [x] temporal modules
 - [x] centerline detection & topology support (refer to ***maptrv2*** branch)
 - [x] multi-modal checkpoints
 - [x] multi-modal code
