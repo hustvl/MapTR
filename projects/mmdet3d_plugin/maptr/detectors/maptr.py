@@ -175,10 +175,11 @@ class MapTR(MVXTwoStageDetector):
             img_feats_list = self.extract_feat(img=imgs_queue, len_queue=len_queue)
             for i in range(len_queue):
                 img_metas = [each[i] for each in img_metas_list]
-                # img_feats = self.extract_feat(img=img, img_metas=img_metas)
+                if not img_metas[0]['prev_bev_exists']:
+                    prev_bev = None
                 img_feats = [each_scale[:, i] for each_scale in img_feats_list]
                 prev_bev = self.pts_bbox_head(
-                    img_feats, img_metas, prev_bev, only_bev=True)
+                    img_feats, None, img_metas, prev_bev, only_bev=True)
             self.train()
             return prev_bev
 
@@ -270,8 +271,10 @@ class MapTR(MVXTwoStageDetector):
         # prev_bev = self.obtain_history_bev(prev_img, prev_img_metas)
         # import pdb;pdb.set_trace()
         prev_bev = self.obtain_history_bev(prev_img, prev_img_metas) if len_queue>1 else None
-
+        
         img_metas = [each[len_queue-1] for each in img_metas]
+        if not img_metas[0]['prev_bev_exists']:
+            prev_bev = None
         img_feats = self.extract_feat(img=img, img_metas=img_metas)
         losses = dict()
         losses_pts = self.forward_pts_train(img_feats, lidar_feat, gt_bboxes_3d,

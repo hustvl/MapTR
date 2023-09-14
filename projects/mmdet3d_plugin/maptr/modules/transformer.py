@@ -54,6 +54,7 @@ class MapTRPerceptionTransformer(BaseModule):
                  rotate_prev_bev=True,
                  use_shift=True,
                  use_can_bus=True,
+                 len_can_bus=18,
                  can_bus_norm=True,
                  use_cams_embeds=True,
                  rotate_center=[100, 100],
@@ -73,6 +74,7 @@ class MapTRPerceptionTransformer(BaseModule):
         self.rotate_prev_bev = rotate_prev_bev
         self.use_shift = use_shift
         self.use_can_bus = use_can_bus
+        self.len_can_bus = len_can_bus
         self.can_bus_norm = can_bus_norm
         self.use_cams_embeds = use_cams_embeds
 
@@ -88,7 +90,7 @@ class MapTRPerceptionTransformer(BaseModule):
             torch.Tensor(self.num_cams, self.embed_dims))
         self.reference_points = nn.Linear(self.embed_dims, 2) # TODO, this is a hack
         self.can_bus_mlp = nn.Sequential(
-            nn.Linear(18, self.embed_dims // 2),
+            nn.Linear(self.len_can_bus, self.embed_dims // 2),
             nn.ReLU(inplace=True),
             nn.Linear(self.embed_dims // 2, self.embed_dims),
             nn.ReLU(inplace=True),
@@ -167,7 +169,7 @@ class MapTRPerceptionTransformer(BaseModule):
         # add can bus signals
         can_bus = bev_queries.new_tensor(
             [each['can_bus'] for each in kwargs['img_metas']])  # [:, :]
-        can_bus = self.can_bus_mlp(can_bus)[None, :, :]
+        can_bus = self.can_bus_mlp(can_bus[:, :self.len_can_bus])[None, :, :]
         bev_queries = bev_queries + can_bus * self.use_can_bus
 
         feat_flatten = []
