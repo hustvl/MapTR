@@ -2,7 +2,7 @@
 <h1>MapTR <img src="assets/map.png" width="30"></h1>
 <h3>An End-to-End Framework for Online Vectorized HD Map Construction</h3>
 
-[Bencheng Liao](https://github.com/LegendBC)<sup>1,2,3</sup> \*, [Shaoyu Chen](https://scholar.google.com/citations?user=PIeNN2gAAAAJ&hl=en&oi=sra)<sup>1,3</sup> \*, [Yunchi Zhang](https://github.com/zyc10ud)<sup>1,3</sup> , [Bo Jiang](https://github.com/rb93dett)<sup>1,3</sup> ,[Tianheng Cheng](https://scholar.google.com/citations?user=PH8rJHYAAAAJ&hl=zh-CN)<sup>1,3</sup>, [Qian Zhang](https://scholar.google.com/citations?user=pCY-bikAAAAJ&hl=zh-CN)<sup>3</sup>, [Wenyu Liu](http://eic.hust.edu.cn/professor/liuwenyu/)<sup>1</sup>, [Chang Huang](https://scholar.google.com/citations?user=IyyEKyIAAAAJ&hl=zh-CN)<sup>3</sup>, [Xinggang Wang](https://xinggangw.info/)<sup>1 :email:</sup>
+[Bencheng Liao](https://github.com/LegendBC)<sup>1,2,3</sup> \*, [Shaoyu Chen](https://scholar.google.com/citations?user=PIeNN2gAAAAJ&hl=en&oi=sra)<sup>1,3</sup> \*, [Yunchi Zhang](https://github.com/zyc10ud)<sup>1,3</sup> , [Bo Jiang](https://github.com/rb93dett)<sup>1,3</sup> ,[Tianheng Cheng](https://scholar.google.com/citations?user=PH8rJHYAAAAJ&hl=zh-CN)<sup>1,3</sup>, [Qian Zhang](https://scholar.google.com/citations?user=pCY-bikAAAAJ&hl=zh-CN)<sup>3</sup>, [Wenyu Liu](http://eic.hust.edu.cn/professor/liuwenyu/)<sup>1</sup>, [Chang Huang](https://scholar.google.com/citations?user=IyyEKyIAAAAJ&hl=zh-CN)<sup>3</sup>, [Xinggang Wang](https://xwcv.github.io)<sup>1 :email:</sup>
  
 <sup>1</sup> School of EIC, HUST, <sup>2</sup> Institute of Artificial Intelligence, HUST, <sup>3</sup> Horizon Robotics
 
@@ -71,7 +71,8 @@ High-definition (HD) map provides abundant and precise static environmental info
 | MapTR-tiny | Camera & LiDAR | GKT |24ep | 62.7 | 6.0 | 11858M (bs 4)|[config](projects/configs/maptr/maptr_tiny_fusion_24e.py) |[model](https://drive.google.com/file/d/1CFlJrl3ZDj3gIOysf5Cli9bX5LEYSYO4/view?usp=share_link) / [log](https://drive.google.com/file/d/1rb3S4oluxdZjNm2aJ5lBH23jrkYIaJbC/view?usp=share_link) |
 | MapTR-tiny | R50 | bevpool |24ep | 50.1 | 14.7 | 9817M (bs 4)|[config](projects/configs/maptr/maptr_tiny_r50_24e_bevpool.py) |[model](https://drive.google.com/file/d/16PK9XohV55_3qPVDtpXIl4_Iumw9EnfA/view?usp=sharing) / [log](https://drive.google.com/file/d/14nioV3_VV9KehmxK7XcAHxM8X6JH5WIr/view?usp=sharing) |
 | MapTR-tiny | R50 | bevformer |24ep | 48.7 | 15.0 | 10219M (bs 4)|[config](projects/configs/maptr/maptr_tiny_r50_24e_bevformer.py) |[model](https://drive.google.com/file/d/1y-UBwGBSb2xiV40AuQEBhB-xJyV7VusX/view?usp=sharing) / [log](https://drive.google.com/file/d/1r35bRhTGVtyZTP8drXBTOIhLYGCzjEaF/view?usp=sharing) |
-| MapTR-tiny<sup>+</sup> | R50 | bevformer |24ep | 53.3 | 15.0 | 15087M (bs 4)|[config](projects/configs/maptr/maptr_tiny_r50_24e_t4.py) |[model](https://drive.google.com/file/d/1sbXTawEbpV61TwVULCMRRDTLYzZ6SL7U/view?usp=sharing) / [log](https://drive.google.com/file/d/1YGI_X6Cb2zV13CHMsDvEs8RJRMzeiUzM/view?usp=sharing) |
+| MapTR-tiny<sup>+</sup> | R50 | GKT |24ep | 51.3 | 15.1 | 15158M (bs 4)|[config](projects/configs/maptr/maptr_tiny_r50_24e_t4.py) |[model](https://drive.google.com/file/d/1SWmBriDG8vwLXmWTHGVdrRUrDBxzGa3a/view?usp=drive_link) / [log](https://drive.google.com/file/d/1pJmNL7AhmkwA5Er6nZVpw7qApEhcwMFY/view?usp=drive_link) |
+| MapTR-tiny<sup>+</sup> | R50 | bevformer |24ep | 53.3 | 15.0 | 15087M (bs 4)|[config](projects/configs/maptr/maptr_tiny_r50_24e_bevformer_t4.py) |[model](https://drive.google.com/file/d/1sbXTawEbpV61TwVULCMRRDTLYzZ6SL7U/view?usp=sharing) / [log](https://drive.google.com/file/d/1YGI_X6Cb2zV13CHMsDvEs8RJRMzeiUzM/view?usp=sharing) |
 
 **Notes**: 
 
