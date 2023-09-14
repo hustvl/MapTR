@@ -73,6 +73,10 @@ High-definition (HD) map provides abundant and precise static environmental info
 | MapTR-tiny | R50 | bevformer |24ep | 48.7 | 15.0 | 10219M (bs 4)|[config](projects/configs/maptr/maptr_tiny_r50_24e_bevformer.py) |[model](https://drive.google.com/file/d/1y-UBwGBSb2xiV40AuQEBhB-xJyV7VusX/view?usp=sharing) / [log](https://drive.google.com/file/d/1r35bRhTGVtyZTP8drXBTOIhLYGCzjEaF/view?usp=sharing) |
 | MapTR-tiny<sup>+</sup> | R50 | bevformer |24ep | 53.3 | 15.0 | 15087M (bs 4)|[config](projects/configs/maptr/maptr_tiny_r50_24e_t4.py) |[model](https://drive.google.com/file/d/1sbXTawEbpV61TwVULCMRRDTLYzZ6SL7U/view?usp=sharing) / [log](https://drive.google.com/file/d/1YGI_X6Cb2zV13CHMsDvEs8RJRMzeiUzM/view?usp=sharing) |
 
+**Notes**: 
+
+-  <sup>+</sup> means that we introduce temporal setting.
+
 ### MapTRv2
 Please `git checkout maptrv2` and follow the install instruction to use following checkpoint
 
