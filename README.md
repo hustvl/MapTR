@@ -12,12 +12,13 @@ ArXiv Preprint ([arXiv 2208.14437](https://arxiv.org/abs/2208.14437))
 
 [openreview ICLR'23](https://openreview.net/forum?id=k7p_YAO7yE), accepted as **ICLR Spotlight**
 
-extended ArXiv Preprint MapTRv2 ([arXiv 2308.05736](https://arxiv.org/abs/2308.05736))
+extended ArXiv Preprint MapTRv2 ([arXiv 2308.05736](https://arxiv.org/abs/2308.05736)), accepted to [**IJCV 2024**](https://link.springer.com/article/10.1007/s11263-024-02235-z)
 
 </div>
 
 #
 ### News
+* **`Oct. 6th, 2024`:** MapTRv2 is accepted to IJCV 2024!
 * **`Feb 20th, 2024`:** MapTRv2-based VADv2 is presented on arXiv  [paper](https://arxiv.org/pdf/2402.13243)    [project page](https://hgao-cv.github.io/VADv2/).
 * **`Aug. 31th, 2023`:** initial MapTRv2 is released at ***maptrv2*** branch. Please run `git checkout maptrv2` to use it.
 * **`Aug. 14th, 2023`:** As required by many researchers, the code of MapTR-based map annotation framework (VMA) will be released at https://github.com/hustvl/VMA recently.
@@ -155,6 +156,16 @@ MapTR is based on [mmdetection3d](https://github.com/open-mmlab/mmdetection3d). 
 ## Citation
 If you find MapTR is useful in your research or applications, please consider giving us a star 🌟 and citing it by the following BibTeX entry.
 ```bibtex
+@article{liao2024maptrv2,
+  title={Maptrv2: An end-to-end framework for online vectorized hd map construction},
+  author={Liao, Bencheng and Chen, Shaoyu and Zhang, Yunchi and Jiang, Bo and Zhang, Qian and Liu, Wenyu and Huang, Chang and Wang, Xinggang},
+  journal={International Journal of Computer Vision},
+  pages={1--23},
+  year={2024},
+  publisher={Springer}
+}
+```
+```bibtex
 @inproceedings{MapTR,
   title={MapTR: Structured Modeling and Learning for Online Vectorized HD Map Construction},
   author={Liao, Bencheng and Chen, Shaoyu and Wang, Xinggang and Cheng, Tianheng, and Zhang, Qian and Liu, Wenyu and Huang, Chang},
@@ -163,18 +174,12 @@ If you find MapTR is useful in your research or applications, please consider gi
 }
 ```
 ```bibtex
-@article{maptrv2,
-  title={MapTRv2: An End-to-End Framework for Online Vectorized HD Map Construction},
-  author={Liao, Bencheng and Chen, Shaoyu and Zhang, Yunchi and Jiang, Bo and Zhang, Qian and Liu, Wenyu and Huang, Chang and Wang, Xinggang},
-  journal={arXiv preprint arXiv:2308.05736},
-  year={2023}
-}
-```
-```bibtex
- @article{lanegap,
-  title={Lane Graph as Path: Continuity-preserving Path-wise Modeling for Online Lane Graph Construction},
-  author={Bencheng Liao and Shaoyu Chen and Bo Jiang and Tianheng Cheng and Qian Zhang and Wenyu Liu and Chang Huang and Xinggang Wang},
-  journal={arXiv preprint arXiv:2303.08815},
-  year={2023}
+@inproceedings{liao2025lane,
+  title={Lane graph as path: Continuity-preserving path-wise modeling for online lane graph construction},
+  author={Liao, Bencheng and Chen, Shaoyu and Jiang, Bo and Cheng, Tianheng and Zhang, Qian and Liu, Wenyu and Huang, Chang and Wang, Xinggang},
+  booktitle={European Conference on Computer Vision},
+  pages={334--351},
+  year={2024},
+  organization={Springer}
 }
 ```
