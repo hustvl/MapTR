@@ -18,6 +18,7 @@ extended ArXiv Preprint MapTRv2 ([arXiv 2308.05736](https://arxiv.org/abs/2308.0
 
 #
 ### News
+* **`Feb. 27th, 2025`:** Check out our latest work, DiffusionDrive, accepted to CVPR 2025! This study explores multi-modal end-to-end driving using diffusion models for real-time and real-world applications.
 * **`Oct. 6th, 2024`:** MapTRv2 is accepted to IJCV 2024!
 * **`Feb 20th, 2024`:** MapTRv2-based VADv2 is presented on arXiv  [paper](https://arxiv.org/pdf/2402.13243)    [project page](https://hgao-cv.github.io/VADv2/).
 * **`Aug. 31th, 2023`:** initial MapTRv2 is released at ***maptrv2*** branch. Please run `git checkout maptrv2` to use it.
